@@ -1,9 +1,11 @@
-# Marco normativo — qué puede hacer legalmente una herramienta como ésta en Bolivia
+# Marco normativo — la norma que define el problema y el límite de la herramienta
 
-> Investigación inicial asistida por agente de IA, 10 de septiembre de 2026. Este documento
-> delimita el alcance legal del sistema y sostiene la dimensión fiscal del planteamiento. No es
-> asesoramiento jurídico: es el relevamiento de las normas que el equipo tiene que citar y
-> respetar, con la referencia de cada una para que un tercero la verifique.
+> Investigación inicial asistida por agente de IA (Claude Code, modelo Opus 5), 10 de septiembre
+> de 2026. Este documento hace dos cosas: identifica y transcribe la norma que sostiene el
+> problema del importador, y delimita hasta dónde puede llegar legalmente una herramienta de
+> análisis en Bolivia. No es asesoramiento jurídico: es el relevamiento de las normas que el
+> equipo tiene que citar y respetar, con la referencia de cada una para que un tercero la
+> verifique por su cuenta.
 
 ---
 
@@ -62,7 +64,7 @@ consistente en varias fuentes secundarias.
 
 ---
 
-## La dimensión fiscal: la norma que la sostiene
+## La norma que define el problema del importador
 
 ### Qué dice la RND 102400000021
 
@@ -112,24 +114,28 @@ La pregunta sirve en los tres desenlaces posibles:
   perdió. Es stock, no flujo, y es cuantificable. Un tribunal que diga «eso ya se resolvió» se
   contesta con la ventana temporal.
 
-### Por qué es una dimensión y no el eje
+### Las tres objeciones que el enfoque tiene que contestar, y cómo se contestan
 
-La evaluación del equipo sobre correr el eje entero hacia el importador encontró tres huecos, y
-los tres siguen valiendo como razón para tratarlo como dimensión:
+El propio equipo levantó tres objeciones cuando evaluó este enfoque. Ninguna lo invalida, pero las
+tres tienen que estar contestadas por escrito antes de la defensa, porque son las preguntas
+obvias del tribunal.
 
-**No es, por sí solo, un problema de ciencia de datos.** El crédito fiscal es jurídico-contable.
-«Presentar estas operaciones de manera ordenada» no tiene modelo, ni predicción, ni una decisión
-que un modelo mejore.
+**«Esto no es un problema de ciencia de datos, es jurídico-contable.»** Lo es si el proyecto se
+queda en presentar operaciones ordenadas. Deja de serlo cuando el sistema **estima**: qué volumen
+de importación supera el umbral, qué porción pasa por canal formal, y —con operaciones
+individuales— qué probabilidad tiene una operación concreta de quedar sin respaldo válido. Ahí hay
+un problema de clasificación con variables observables y una línea base contra la cual medirse.
 
-**No hay datos directos.** Quien paga por fuera del canal formal no deja registro público. El
-denominador se estima con fuentes públicas —Aduana Nacional, agregados de ASFI y el BCB—, pero la
-porción expuesta es una estimación con supuestos, no un dato medido.
+**«No hay datos.»** No hay datos directos: quien paga fuera del canal formal no deja registro
+público. Lo que sí hay son tres fuentes públicas que dan el denominador —Aduana Nacional para el
+volumen importado, ASFI y el BCB para la porción que pasa por canal formal— y un conjunto de datos
+de compras de una empresa de Santa Cruz, con montos normalizados, disponible para prototipar el
+modelo. La diferencia entre las dos primeras es una estimación con supuestos, y es defendible
+mientras los supuestos estén escritos y la cuenta se pueda rehacer con otros.
 
-**Se perdería la evidencia acumulada.** Las alertas de ASFI, los 2.157 clientes de agencias de
-bolsa contra los 7,9 millones de billeteras, los 124.867 participantes de SAFI: todo eso describe
-al inversionista minorista.
-
-Tratado como dimensión del riesgo, el hallazgo suma sin costar nada de lo anterior.
+**«El problema puede haberse cerrado solo.»** Es la objeción más fuerte y se contesta midiendo,
+no argumentando: hay que resolver la pregunta abierta de arriba. Y aun con la respuesta más
+desfavorable, el stock acumulado entre 2023 y abril de 2026 sigue en pie.
 
 ---
 
@@ -143,6 +149,13 @@ Tratado como dimensión del riesgo, el hallazgo suma sin costar nada de lo anter
 | Res. ASFI 540/2025 | Autorización obligatoria de PSAV, vencida 30-abr-2026 | Define qué canal es «formal» a efectos de la estimación |
 | RD 082/2024 (25-jun-2024) | Deja sin efecto la prohibición de la RD 144/2020 | Habilita el objeto mismo del análisis |
 
-Cada pantalla del sistema que muestre riesgo lleva la advertencia de variabilidad de precios, y
-ninguna sugiere comprar o vender un instrumento concreto. Es el mismo estándar que la norma le
-fija al promotor bursátil, y adoptarlo por escrito es más barato que discutirlo después.
+Cada pantalla que muestre una estimación de exposición fiscal lleva escrito que es una estimación
+con supuestos y no una determinación tributaria, y ninguna sugiere comprar, vender ni pagar de una
+forma concreta. Es el mismo estándar que la norma le fija al promotor bursátil, trasladado al
+terreno tributario, y adoptarlo por escrito desde el diseño es más barato que discutirlo después.
+
+Vale además como diferenciación frente al antecedente que ASFI viene señalando: **ninguna de las
+siete plataformas alertadas se limitaba a informar.** Todas ofertaban inversión o captaban dinero
+a cambio de rendimientos. La distancia entre analizar y ofrecer es exactamente la que separa a
+este proyecto de esa lista, y conviene que esté declarada en el documento y no solo en la
+arquitectura.
