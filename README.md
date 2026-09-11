@@ -14,7 +14,6 @@ Intelligence II, materia en la que el proyecto se desarrolla.
 - Fiorella Michelle Sandoval Castro
 - Samuel Roberto Castillo Cornejo
 - Carlos Andrés Méndez Cadario
-- Jhennifer Rocío Sivila Segovia
 
 ## Cómo está organizado
 
