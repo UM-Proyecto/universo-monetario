@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Universo Monetario - Mapa de Impacto</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+tailwind.config = { theme: { extend: { fontFamily: {
+  sans: ['Poppins','sans-serif'], inter: ['Inter','sans-serif'] } } } }
+</script>
+<style>
+  body{
+    font-family:'Poppins',sans-serif;
+    background-color:#f4f6fa;
+    background-image:radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+    background-size:24px 24px;
+    margin:0; overflow:hidden;
+  }
+  .custom-scrollbar::-webkit-scrollbar{width:8px;height:8px}
+  .custom-scrollbar::-webkit-scrollbar-track{background:transparent}
+  .custom-scrollbar::-webkit-scrollbar-thumb{background-color:rgba(148,163,184,.35);border-radius:10px}
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover{background-color:rgba(148,163,184,.65)}
+
+  .map-wrapper{
+    background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);
+    background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23cbd5e1' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .canvas{position:relative;min-width:max-content}
+  /* el mismo origen para el svg y para los nodos: los absolutos se posicionan
+     contra el padding box, asi que el margen va en .inner y no en .canvas */
+  .inner{position:relative;margin:70px 60px}
+  #svg-canvas{position:absolute;top:0;left:0;pointer-events:none;z-index:0;overflow:visible}
+  .ln{fill:none;stroke-width:2.5;opacity:.55;
+      stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+      animation:draw 1.1s cubic-bezier(.4,0,.2,1) forwards}
+  .ln-thin{stroke-width:1.8;opacity:.4}
+  @keyframes draw{to{stroke-dashoffset:0}}
+
+  /* ---- nodos, con el lenguaje del MVP: 16px de radio, blur y sombra suave ---- */
+  .map-node{
+    position:absolute;
+    background:rgba(255,255,255,.95);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(226,232,240,.8);
+    border-radius:16px;
+    padding:17px 22px;
+    box-shadow:0 10px 25px -5px rgba(0,0,0,.05),0 8px 10px -6px rgba(0,0,0,.01);
+    transition:transform .4s cubic-bezier(.175,.885,.32,1.275),box-shadow .4s ease,border-color .3s ease;
+    z-index:10;
+    opacity:0; animation:fadeInUp .5s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  @keyframes fadeInUp{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+  .map-node:hover{
+    transform:scale(1.04) translateY(-5px);
+    box-shadow:0 25px 30px -5px rgba(0,0,0,.1),0 15px 15px -10px var(--branch-color);
+    border-color:var(--branch-color);
+    z-index:30;
+  }
+
+  .color-blue{--branch-color:#3b82f6;--bg-light:#eff6ff;--text-dark:#1e3a8a}
+  .color-indigo{--branch-color:#6366f1;--bg-light:#eef2ff;--text-dark:#312e81}
+  .color-amber{--branch-color:#f59e0b;--bg-light:#fffbeb;--text-dark:#78350f}
+  .color-emerald{--branch-color:#10b981;--bg-light:#ecfdf5;--text-dark:#064e3b}
+  .color-rose{--branch-color:#f43f5e;--bg-light:#fff1f2;--text-dark:#881337}
+  .color-violet{--branch-color:#8b5cf6;--bg-light:#f5f3ff;--text-dark:#4c1d95}
+  .color-sky{--branch-color:#0ea5e9;--bg-light:#f0f9ff;--text-dark:#075985}
+
+  .goal-node{
+    background:linear-gradient(145deg,#0f172a,#1e293b);
+    color:#fff;border:1px solid #334155;text-align:center;padding:30px;
+    box-shadow:0 20px 40px -10px rgba(15,23,42,.5);overflow:hidden;
+  }
+  .goal-node::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;
+    background:linear-gradient(90deg,#3b82f6,#8b5cf6,#f43f5e)}
+  .goal-node .icon-bg{background:rgba(255,255,255,.1);color:#fff;margin:8px auto 18px auto;
+    backdrop-filter:blur(5px);border:1px solid rgba(255,255,255,.2)}
+  .goal-tag{font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.15em;
+    color:#94a3b8;display:block;margin-bottom:10px}
+  .goal-txt{font-size:1.05rem;font-weight:600;line-height:1.5}
+  .goal-met{font-family:'Inter',sans-serif;font-size:.72rem;font-weight:400;color:#94a3b8;
+    line-height:1.6;margin-top:16px;border-top:1px solid rgba(255,255,255,.12);padding-top:14px;
+    text-align:left}
+
+  .icon-bg{background:#fff;padding:9px;border-radius:12px;display:inline-flex;
+    align-items:center;justify-content:center;color:var(--branch-color);
+    box-shadow:0 4px 10px -2px rgba(0,0,0,.1);transition:transform .3s ease}
+  .icon-bg i{width:20px;height:20px}
+  .map-node:hover .icon-bg{transform:scale(1.1) rotate(5deg)}
+
+  .actor-node{border-top:6px solid var(--branch-color);
+    background:linear-gradient(to bottom,var(--bg-light),#fff);
+    border-bottom:2px solid rgba(0,0,0,.05)}
+  .an-txt{font-weight:800;text-transform:uppercase;font-size:.85rem;color:var(--text-dark);
+    line-height:1.4;margin-top:12px;letter-spacing:.01em}
+  .an-meta{font-family:'Inter',sans-serif;font-size:.68rem;font-weight:700;
+    color:var(--branch-color);margin-top:6px;letter-spacing:.04em}
+  .an-desc{font-family:'Inter',sans-serif;font-size:.7rem;font-weight:400;color:#64748b;
+    line-height:1.5;margin-top:9px}
+
+  .impact-node{border-left:8px solid var(--branch-color);font-size:.9rem;
+    color:var(--text-dark);font-weight:700;line-height:1.45}
+  .tag-label{font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.15em;
+    margin-bottom:8px;display:block;color:var(--branch-color)}
+
+  .task-node{border-left:4px solid var(--branch-color);background:#fff}
+  .tn-txt{font-size:.8rem;color:#334155;line-height:1.5;font-weight:600}
+  .tn-nota{font-family:'Inter',sans-serif;font-size:.7rem;color:#94a3b8;line-height:1.45;
+    margin-top:6px;font-weight:400}
+  .tn-pie{display:flex;align-items:center;gap:8px;margin-top:11px;flex-wrap:wrap}
+  .tn-pie .sp{font-family:'Inter',sans-serif;font-size:.65rem;font-weight:900;
+    color:var(--branch-color);background:var(--bg-light);padding:3px 7px;border-radius:6px}
+  .tn-pie .mat{font-family:'Inter',sans-serif;font-size:.65rem;font-weight:600;color:#94a3b8}
+  .est{font-family:'Inter',sans-serif;font-size:.6rem;font-weight:800;text-transform:uppercase;
+    letter-spacing:.08em;padding:3px 7px;border-radius:6px;margin-left:auto}
+  .est-hecho,.est-resuelto{background:#dcfce7;color:#15803d}
+  .est-encurso,.est-parcial{background:#fef3c7;color:#a16207}
+  .est-pendiente{background:#f1f5f9;color:#94a3b8}
+  .est-bloqueante{background:#ffe4e6;color:#be123c}
+  .task-node.st-bloqueante{border-left-color:#e11d48;box-shadow:0 10px 25px -5px rgba(225,29,72,.18)}
+
+  /* aislar rama */
+  .canvas.aislar .map-node:not(.on):not(.goal-node){opacity:.12}
+  .canvas.aislar .ln:not(.on){opacity:.05}
+  .map-node,.ln{transition:opacity .25s ease}
+
+  .leg{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:10px;
+    background:#fff;border:1px solid #e2e8f0;font-size:.76rem;font-weight:600;color:#475569;
+    cursor:pointer;transition:all .2s ease;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .leg:hover{border-color:var(--branch-color);color:#0f172a;transform:translateY(-1px)}
+  .leg[aria-pressed="true"]{background:var(--bg-light);border-color:var(--branch-color);
+    color:var(--text-dark);box-shadow:0 4px 10px -4px var(--branch-color)}
+  .leg .dot{width:10px;height:10px;border-radius:50%;background:var(--branch-color);flex:none}
+  .leg em{font-family:'Inter',sans-serif;font-style:normal;font-size:.68rem;font-weight:800;
+    color:#94a3b8}
+
+  .kpi{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:13px 17px;
+    box-shadow:0 4px 10px -6px rgba(0,0,0,.1);min-width:132px}
+  .kpi b{font-family:'Inter',sans-serif;display:block;font-size:1.5rem;font-weight:900;
+    color:#0f172a;line-height:1}
+  .kpi span{display:block;font-size:.72rem;font-weight:700;color:#475569;margin-top:4px}
+  .kpi em{font-family:'Inter',sans-serif;font-style:normal;display:block;font-size:.65rem;
+    color:#94a3b8;font-weight:500;margin-top:2px}
+
+  .zoom-btn{width:34px;height:34px;border-radius:9px;background:#fff;border:1px solid #e2e8f0;
+    display:grid;place-items:center;cursor:pointer;color:#475569;transition:all .2s}
+  .zoom-btn:hover{border-color:#6366f1;color:#4f46e5}
+  .zoom-btn i{width:16px;height:16px}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    .map-node{opacity:1}.ln{stroke-dashoffset:0!important}}
+</style>
+</head>
+<body class="h-screen flex flex-col">
+
+<header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center gap-4 flex-wrap shadow-sm z-40">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 grid place-items-center text-white shadow-lg">
+      <i data-lucide="target" class="w-5 h-5"></i>
+    </div>
+    <div>
+      <h1 class="text-base font-black text-slate-800 tracking-tight leading-none">MAPA DE IMPACTO</h1>
+      <p class="text-[11px] text-slate-500 font-medium mt-0.5">Universo Monetario &bull; Univalle Santa Cruz</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-4 ml-auto flex-wrap font-inter">
+    <div class="flex items-center gap-4 text-[11px] font-bold text-slate-400 tracking-wide">
+      <span><b class="text-slate-800 text-sm">4</b> ACTORES</span>
+      <span><b class="text-slate-800 text-sm">16</b> IMPACTOS</span>
+      <span><b class="text-slate-800 text-sm">32</b> ENTREGABLES</span>
+      <span><b class="text-indigo-600 text-sm">209</b> STORY POINTS</span>
+    </div>
+    <div class="flex items-center gap-1.5">
+      <button class="zoom-btn" id="zout" title="Alejar"><i data-lucide="minus"></i></button>
+      <span id="zlabel" class="text-[11px] font-bold text-slate-500 w-10 text-center font-inter">100%</span>
+      <button class="zoom-btn" id="zin" title="Acercar"><i data-lucide="plus"></i></button>
+      <button class="zoom-btn" id="zfit" title="Ver todo"><i data-lucide="maximize-2"></i></button>
+    </div>
+  </div>
+</header>
+
+<div class="bg-white/70 backdrop-blur border-b border-slate-200 px-6 py-2.5 flex items-center gap-2 flex-wrap z-30">
+  <span class="text-[10px] font-black uppercase tracking-[.15em] text-slate-400 mr-1">Ramas</span>
+  <button class="leg color-blue rama-blue" data-r="blue"><span class="dot"></span>Ahorrista sin formación financiera<em>55&nbsp;SP</em></button><button class="leg color-indigo rama-indigo" data-r="indigo"><span class="dot"></span>Importador que paga al exterior<em>44&nbsp;SP</em></button><button class="leg color-amber rama-amber" data-r="amber"><span class="dot"></span>Contador de la empresa<em>70&nbsp;SP</em></button><button class="leg color-emerald rama-emerald" data-r="emerald"><span class="dot"></span>Proveedores de datos<em>40&nbsp;SP</em></button>
+  <button id="limpiar" class="text-[11px] font-semibold text-slate-400 hover:text-slate-700 ml-2 underline underline-offset-2">ver todas</button>
+</div>
+
+<main class="flex-1 overflow-auto map-wrapper custom-scrollbar" id="scroller">
+  <div class="canvas" id="canvas" style="width:1950px;height:5532px">
+    <div class="inner" style="width:1830px;height:5392px">
+      <svg id="svg-canvas" width="1830" height="5392" viewBox="0 0 1830 5392"><path class="ln ln-blue" d="M420,2696 C500,2696 500,641 580,641" stroke="#3b82f6"/><path class="ln ln-blue" d="M880,641 C960,641 960,153 1040,153" stroke="#3b82f6"/><path class="ln ln-thin ln-blue" d="M1340,153 C1420,153 1420,68 1500,68" stroke="#3b82f6"/><path class="ln ln-thin ln-blue" d="M1340,153 C1420,153 1420,231 1500,231" stroke="#3b82f6"/><path class="ln ln-blue" d="M880,641 C960,641 960,492 1040,492" stroke="#3b82f6"/><path class="ln ln-thin ln-blue" d="M1340,492 C1420,492 1420,415 1500,415" stroke="#3b82f6"/><path class="ln ln-thin ln-blue" d="M1340,492 C1420,492 1420,569 1500,569" stroke="#3b82f6"/><path class="ln ln-blue" d="M880,641 C960,641 960,823 1040,823" stroke="#3b82f6"/><path class="ln ln-thin ln-blue" d="M1340,823 C1420,823 1420,746 1500,746" stroke="#3b82f6"/><path class="ln ln-thin ln-blue" d="M1340,823 C1420,823 1420,900 1500,900" stroke="#3b82f6"/><path class="ln ln-blue" d="M880,641 C960,641 960,1136 1040,1136" stroke="#3b82f6"/><path class="ln ln-thin ln-blue" d="M1340,1136 C1420,1136 1420,1059 1500,1059" stroke="#3b82f6"/><path class="ln ln-thin ln-blue" d="M1340,1136 C1420,1136 1420,1196 1500,1196" stroke="#3b82f6"/><path class="ln ln-indigo" d="M420,2696 C500,2696 500,2003 580,2003" stroke="#6366f1"/><path class="ln ln-indigo" d="M880,2003 C960,2003 960,1497 1040,1497" stroke="#6366f1"/><path class="ln ln-thin ln-indigo" d="M1340,1497 C1420,1497 1420,1420 1500,1420" stroke="#6366f1"/><path class="ln ln-thin ln-indigo" d="M1340,1497 C1420,1497 1420,1575 1500,1575" stroke="#6366f1"/><path class="ln ln-indigo" d="M880,2003 C960,2003 960,1828 1040,1828" stroke="#6366f1"/><path class="ln ln-thin ln-indigo" d="M1340,1828 C1420,1828 1420,1751 1500,1751" stroke="#6366f1"/><path class="ln ln-thin ln-indigo" d="M1340,1828 C1420,1828 1420,1905 1500,1905" stroke="#6366f1"/><path class="ln ln-indigo" d="M880,2003 C960,2003 960,2159 1040,2159" stroke="#6366f1"/><path class="ln ln-thin ln-indigo" d="M1340,2159 C1420,2159 1420,2082 1500,2082" stroke="#6366f1"/><path class="ln ln-thin ln-indigo" d="M1340,2159 C1420,2159 1420,2236 1500,2236" stroke="#6366f1"/><path class="ln ln-indigo" d="M880,2003 C960,2003 960,2490 1040,2490" stroke="#6366f1"/><path class="ln ln-thin ln-indigo" d="M1340,2490 C1420,2490 1420,2413 1500,2413" stroke="#6366f1"/><path class="ln ln-thin ln-indigo" d="M1340,2490 C1420,2490 1420,2567 1500,2567" stroke="#6366f1"/><path class="ln ln-amber" d="M420,2696 C500,2696 500,3374 580,3374" stroke="#f59e0b"/><path class="ln ln-amber" d="M880,3374 C960,3374 960,2869 1040,2869" stroke="#f59e0b"/><path class="ln ln-thin ln-amber" d="M1340,2869 C1420,2869 1420,2791 1500,2791" stroke="#f59e0b"/><path class="ln ln-thin ln-amber" d="M1340,2869 C1420,2869 1420,2946 1500,2946" stroke="#f59e0b"/><path class="ln ln-amber" d="M880,3374 C960,3374 960,3199 1040,3199" stroke="#f59e0b"/><path class="ln ln-thin ln-amber" d="M1340,3199 C1420,3199 1420,3122 1500,3122" stroke="#f59e0b"/><path class="ln ln-thin ln-amber" d="M1340,3199 C1420,3199 1420,3277 1500,3277" stroke="#f59e0b"/><path class="ln ln-amber" d="M880,3374 C960,3374 960,3530 1040,3530" stroke="#f59e0b"/><path class="ln ln-thin ln-amber" d="M1340,3530 C1420,3530 1420,3453 1500,3453" stroke="#f59e0b"/><path class="ln ln-thin ln-amber" d="M1340,3530 C1420,3530 1420,3607 1500,3607" stroke="#f59e0b"/><path class="ln ln-amber" d="M880,3374 C960,3374 960,3861 1040,3861" stroke="#f59e0b"/><path class="ln ln-thin ln-amber" d="M1340,3861 C1420,3861 1420,3784 1500,3784" stroke="#f59e0b"/><path class="ln ln-thin ln-amber" d="M1340,3861 C1420,3861 1420,3938 1500,3938" stroke="#f59e0b"/><path class="ln ln-emerald" d="M420,2696 C500,2696 500,4743 580,4743" stroke="#10b981"/><path class="ln ln-emerald" d="M880,4743 C960,4743 960,4240 1040,4240" stroke="#10b981"/><path class="ln ln-thin ln-emerald" d="M1340,4240 C1420,4240 1420,4163 1500,4163" stroke="#10b981"/><path class="ln ln-thin ln-emerald" d="M1340,4240 C1420,4240 1420,4317 1500,4317" stroke="#10b981"/><path class="ln ln-emerald" d="M880,4743 C960,4743 960,4569 1040,4569" stroke="#10b981"/><path class="ln ln-thin ln-emerald" d="M1340,4569 C1420,4569 1420,4492 1500,4492" stroke="#10b981"/><path class="ln ln-thin ln-emerald" d="M1340,4569 C1420,4569 1420,4645 1500,4645" stroke="#10b981"/><path class="ln ln-emerald" d="M880,4743 C960,4743 960,4898 1040,4898" stroke="#10b981"/><path class="ln ln-thin ln-emerald" d="M1340,4898 C1420,4898 1420,4821 1500,4821" stroke="#10b981"/><path class="ln ln-thin ln-emerald" d="M1340,4898 C1420,4898 1420,4975 1500,4975" stroke="#10b981"/><path class="ln ln-emerald" d="M880,4743 C960,4743 960,5229 1040,5229" stroke="#10b981"/><path class="ln ln-thin ln-emerald" d="M1340,5229 C1420,5229 1420,5152 1500,5152" stroke="#10b981"/><path class="ln ln-thin ln-emerald" d="M1340,5229 C1420,5229 1420,5306 1500,5306" stroke="#10b981"/></svg>
+      <div class="map-node actor-node color-blue rama-blue" style="left:580px;top:572px;width:300px"><div class="icon-bg"><i data-lucide="piggy-bank"></i></div><div class="an-txt">Ahorrista sin formación financiera</div><div class="an-meta">4 impactos &middot; 55 SP</div><div class="an-desc">Decide entre bolivianos, dólares y banco sin herramientas para comparar.</div></div><div class="map-node impact-node color-blue rama-blue" style="left:1040px;top:105px;width:300px"><span class="tag-label">Impacto</span>Compara opciones en la misma vara y no por costumbre</div><div class="map-node task-node color-blue rama-blue st-pendiente" style="left:1500px;top:0px;width:330px" title="Tablero comparativo: seis opciones en cuatro dimensiones — pendiente"><div class="tn-txt">Tablero comparativo: seis opciones en cuatro dimensiones</div><div class="tn-nota">Es el entregable central de la materia y el que ve el tribunal.</div><div class="tn-pie"><span class="sp">13 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node task-node color-blue rama-blue st-pendiente" style="left:1500px;top:154px;width:330px" title="Normalizar las seis opciones a una unidad común por cada Bs 1.000 — pendiente"><div class="tn-txt">Normalizar las seis opciones a una unidad común por cada Bs 1.000</div><div class="tn-nota">Sin unidad común no hay comparación, sólo seis fichas de producto. Los fondos ya traen valor cuota diario.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node impact-node color-blue rama-blue" style="left:1040px;top:444px;width:300px"><span class="tag-label">Impacto</span>Ve cuánto le cuesta quedarse en efectivo</div><div class="map-node task-node color-blue rama-blue st-pendiente" style="left:1500px;top:347px;width:330px" title="Serie de rendimiento real contra el IPC empalmado del INE — pendiente"><div class="tn-txt">Serie de rendimiento real contra el IPC empalmado del INE</div><div class="tn-nota">Nominal menos inflación. El IPC ya está descargado y abierto.</div><div class="tn-pie"><span class="sp">8 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node task-node color-blue rama-blue st-pendiente" style="left:1500px;top:501px;width:330px" title="Línea base del efectivo en bolivianos como referencia — pendiente"><div class="tn-txt">Línea base del efectivo en bolivianos como referencia</div><div class="tn-nota">Es el costo de no hacer nada, y la vara contra la que se miden las otras cinco.</div><div class="tn-pie"><span class="sp">3 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node impact-node color-blue rama-blue" style="left:1040px;top:775px;width:300px"><span class="tag-label">Impacto</span>Lee el riesgo como cifra y no como adjetivo</div><div class="map-node task-node color-blue rama-blue st-pendiente" style="left:1500px;top:678px;width:330px" title="Volatilidad por opción, con la escala derivada de la cifra — pendiente"><div class="tn-txt">Volatilidad por opción, con la escala derivada de la cifra</div><div class="tn-nota">De once productos de la región, ninguno publica desviación estándar.</div><div class="tn-pie"><span class="sp">8 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node task-node color-blue rama-blue st-pendiente" style="left:1500px;top:832px;width:330px" title="Presentación del riesgo: escala visual y monto en bolivianos — pendiente"><div class="tn-txt">Presentación del riesgo: escala visual y monto en bolivianos</div><div class="tn-nota">La escala se deriva de la cifra, nunca se calculan por separado.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node impact-node color-blue rama-blue" style="left:1040px;top:1088px;width:300px"><span class="tag-label">Impacto</span>Entiende lo que lee sin formación contable</div><div class="map-node task-node color-blue rama-blue st-pendiente" style="left:1500px;top:1008px;width:330px" title="Lenguaje sin jerga en toda la interfaz — pendiente"><div class="tn-txt">Lenguaje sin jerga en toda la interfaz</div><div class="tn-nota">TASK-21 del tablero.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node task-node color-blue rama-blue st-pendiente" style="left:1500px;top:1128px;width:330px" title="Validación de comprensibilidad con usuarios reales — pendiente"><div class="tn-txt">Validación de comprensibilidad con usuarios reales</div><div class="tn-nota">TASK-22. El instrumento tiene que poder devolver un resultado que desmienta.</div><div class="tn-pie"><span class="sp">8 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node actor-node color-indigo rama-indigo" style="left:580px;top:1943px;width:300px"><div class="icon-bg"><i data-lucide="ship"></i></div><div class="an-txt">Importador que paga al exterior</div><div class="an-meta">4 impactos &middot; 44 SP</div><div class="an-desc">Compra mercadería y paga con dólares digitales porque es el canal al que llega.</div></div><div class="map-node impact-node color-indigo rama-indigo" style="left:1040px;top:1449px;width:300px"><span class="tag-label">Impacto</span>Elige el canal de pago sabiendo qué respaldo le deja</div><div class="map-node task-node color-indigo rama-indigo st-parcial" style="left:1500px;top:1352px;width:330px" title="Columna de respaldo documental con la cita normativa — parcial"><div class="tn-txt">Columna de respaldo documental con la cita normativa</div><div class="tn-nota">La RND 102400000021 ya está leída y guardada en el repositorio.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">BI II</span><span class="est est-parcial">parcial</span></div></div><div class="map-node task-node color-indigo rama-indigo st-pendiente" style="left:1500px;top:1506px;width:330px" title="Semáforo de admisibilidad del documento por canal de pago — pendiente"><div class="tn-txt">Semáforo de admisibilidad del documento por canal de pago</div><div class="tn-nota">Traduce la enumeración del artículo 3 a una respuesta por canal.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node impact-node color-indigo rama-indigo" style="left:1040px;top:1780px;width:300px"><span class="tag-label">Impacto</span>Conoce el sobrecosto real de conseguir dólares digitales</div><div class="map-node task-node color-indigo rama-indigo st-hecho" style="left:1500px;top:1683px;width:330px" title="Captura horaria del libro P2P completo, una fila por anuncio — hecho"><div class="tn-txt">Captura horaria del libro P2P completo, una fila por anuncio</div><div class="tn-nota">Corregida el 11-sep: antes tomaba 20 de ~180 y sesgaba la mediana 2,3 %.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">—</span><span class="est est-hecho">hecho</span></div></div><div class="map-node task-node color-indigo rama-indigo st-hecho" style="left:1500px;top:1837px;width:330px" title="Brecha del precio P2P contra el tipo de cambio oficial, por hora — hecho"><div class="tn-txt">Brecha del precio P2P contra el tipo de cambio oficial, por hora</div><div class="tn-nota">Sale de resumen.csv; la serie corre desde el 9 de septiembre.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">BI II</span><span class="est est-hecho">hecho</span></div></div><div class="map-node impact-node color-indigo rama-indigo" style="left:1040px;top:2111px;width:300px"><span class="tag-label">Impacto</span>Dimensiona su exposición sobre el umbral de la norma</div><div class="map-node task-node color-indigo rama-indigo st-hecho" style="left:1500px;top:2014px;width:330px" title="Conteo de anuncios y volumen por tramo contra el umbral de Bs 50.000 — hecho"><div class="tn-txt">Conteo de anuncios y volumen por tramo contra el umbral de Bs 50.000</div><div class="tn-nota">Medido el 11-sep: 53 de 178 anuncios de compra operan sobre el umbral.</div><div class="tn-pie"><span class="sp">3 SP</span><span class="mat">Minería</span><span class="est est-hecho">hecho</span></div></div><div class="map-node task-node color-indigo rama-indigo st-pendiente" style="left:1500px;top:2168px;width:330px" title="Estimación del volumen importado expuesto, con supuestos escritos — pendiente"><div class="tn-txt">Estimación del volumen importado expuesto, con supuestos escritos</div><div class="tn-nota">TASK-38. Necesita las estadísticas de la Aduana Nacional.</div><div class="tn-pie"><span class="sp">8 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node impact-node color-indigo rama-indigo" style="left:1040px;top:2442px;width:300px"><span class="tag-label">Impacto</span>Cuantifica el crédito fiscal que ya perdió</div><div class="map-node task-node color-indigo rama-indigo st-pendiente" style="left:1500px;top:2344px;width:330px" title="Estimador de crédito fiscal en riesgo por operación y período — pendiente"><div class="tn-txt">Estimador de crédito fiscal en riesgo por operación y período</div><div class="tn-nota">El artículo 5 tiene tres efectos: IVA, IUE y RC-IVA.</div><div class="tn-pie"><span class="sp">8 SP</span><span class="mat">Minería</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node task-node color-indigo rama-indigo st-pendiente" style="left:1500px;top:2499px;width:330px" title="Serie del stock acumulado entre 2023 y abril de 2026 — pendiente"><div class="tn-txt">Serie del stock acumulado entre 2023 y abril de 2026</div><div class="tn-nota">Es stock, no flujo: ya ocurrió y no cambia con lo que decida el regulador.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node actor-node color-amber rama-amber" style="left:580px;top:3314px;width:300px"><div class="icon-bg"><i data-lucide="calculator"></i></div><div class="an-txt">Contador de la empresa</div><div class="an-meta">4 impactos &middot; 70 SP</div><div class="an-desc">Descubre la pérdida de crédito fiscal cuando ya no se puede corregir.</div></div><div class="map-node impact-node color-amber rama-amber" style="left:1040px;top:2821px;width:300px"><span class="tag-label">Impacto</span>Detecta antes de declarar qué compras quedan sin respaldo</div><div class="map-node task-node color-amber rama-amber st-pendiente" style="left:1500px;top:2723px;width:330px" title="Detección de anomalías sobre operaciones fuera del patrón documental — pendiente"><div class="tn-txt">Detección de anomalías sobre operaciones fuera del patrón documental</div><div class="tn-nota">Aporte natural de Minería de Datos y no necesita etiquetas.</div><div class="tn-pie"><span class="sp">13 SP</span><span class="mat">Minería</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node task-node color-amber rama-amber st-pendiente" style="left:1500px;top:2878px;width:330px" title="Alerta por operación sobre el umbral sin documento admitido — pendiente"><div class="tn-txt">Alerta por operación sobre el umbral sin documento admitido</div><div class="tn-nota">Antes de la declaración, que es cuando todavía se puede corregir.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">Minería</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node impact-node color-amber rama-amber" style="left:1040px;top:3151px;width:300px"><span class="tag-label">Impacto</span>Entiende qué formas de pago concentran el riesgo</div><div class="map-node task-node color-amber rama-amber st-pendiente" style="left:1500px;top:3054px;width:330px" title="Reglas de asociación: método de pago × tramo × tipo de contraparte — pendiente"><div class="tn-txt">Reglas de asociación: método de pago × tramo × tipo de contraparte</div><div class="tn-nota">Los métodos se concentran en seis bancos, así que las reglas tienen soporte.</div><div class="tn-pie"><span class="sp">8 SP</span><span class="mat">Minería</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node task-node color-amber rama-amber st-pendiente" style="left:1500px;top:3208px;width:330px" title="Segmentación no supervisada del panel de anunciantes: K-means y PCA — pendiente"><div class="tn-txt">Segmentación no supervisada del panel de anunciantes: K-means y PCA</div><div class="tn-nota">No supervisado, que es lo que la materia pide y lo que el dato admite.</div><div class="tn-pie"><span class="sp">13 SP</span><span class="mat">IA y ML II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node impact-node color-amber rama-amber" style="left:1040px;top:3482px;width:300px"><span class="tag-label">Impacto</span>Trabaja con los tres efectos del artículo 5, no sólo el IVA</div><div class="map-node task-node color-amber rama-amber st-pendiente" style="left:1500px;top:3385px;width:330px" title="Cálculo separado de IVA, IUE y RC-IVA por operación — pendiente"><div class="tn-txt">Cálculo separado de IVA, IUE y RC-IVA por operación</div><div class="tn-nota">El enunciado del equipo sólo mencionaba el crédito fiscal; el costo es mayor.</div><div class="tn-pie"><span class="sp">8 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node task-node color-amber rama-amber st-encurso" style="left:1500px;top:3539px;width:330px" title="Verificar si el comprobante de un proveedor autorizado califica — en curso"><div class="tn-txt">Verificar si el comprobante de un proveedor autorizado califica</div><div class="tn-nota">TASK-36. Decide si el problema sigue abierto en presente.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">—</span><span class="est est-encurso">en curso</span></div></div><div class="map-node impact-node color-amber rama-amber" style="left:1040px;top:3813px;width:300px"><span class="tag-label">Impacto</span>Ve dónde está el desperdicio del proceso de pago</div><div class="map-node task-node color-amber rama-amber st-pendiente" style="left:1500px;top:3716px;width:330px" title="Simulación de eventos discretos del flujo de compra y sus ramas — pendiente"><div class="tn-txt">Simulación de eventos discretos del flujo de compra y sus ramas</div><div class="tn-nota">Los parámetros salen del libro: tiempos de pago, disponibilidad, montos.</div><div class="tn-pie"><span class="sp">13 SP</span><span class="mat">Optimización III</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node task-node color-amber rama-amber st-pendiente" style="left:1500px;top:3870px;width:330px" title="Lectura Lean: cuello de botella aparente contra causal — pendiente"><div class="tn-txt">Lectura Lean: cuello de botella aparente contra causal</div><div class="tn-nota">El cuello de botella parece el pago; el causal es la documentación.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">Dir. Operaciones</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node actor-node color-emerald rama-emerald" style="left:580px;top:4684px;width:300px"><div class="icon-bg"><i data-lucide="database"></i></div><div class="an-txt">Proveedores de datos</div><div class="an-meta">4 impactos &middot; 40 SP</div><div class="an-desc">BCB, INE, ASFI, BBV y Binance. Sin ellos no hay columna que llenar.</div></div><div class="map-node impact-node color-emerald rama-emerald" style="left:1040px;top:4192px;width:300px"><span class="tag-label">Impacto</span>Sus datos entran al sistema sin intervención manual</div><div class="map-node task-node color-emerald rama-emerald st-pendiente" style="left:1500px;top:4094px;width:330px" title="Ingesta automática de las fuentes ya verificadas — pendiente"><div class="tn-txt">Ingesta automática de las fuentes ya verificadas</div><div class="tn-nota">Las seis columnas tienen su fuente descargada y abierta.</div><div class="tn-pie"><span class="sp">8 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node task-node color-emerald rama-emerald st-parcial" style="left:1500px;top:4249px;width:330px" title="Catálogo de fuentes con evidencia de descarga y fecha de corte — parcial"><div class="tn-txt">Catálogo de fuentes con evidencia de descarga y fecha de corte</div><div class="tn-nota">Verificar es abrir el archivo, no comprobar que la página responda.</div><div class="tn-pie"><span class="sp">3 SP</span><span class="mat">—</span><span class="est est-parcial">parcial</span></div></div><div class="map-node impact-node color-emerald rama-emerald" style="left:1040px;top:4521px;width:300px"><span class="tag-label">Impacto</span>Sus cambios no rompen el sistema en silencio</div><div class="map-node task-node color-emerald rama-emerald st-pendiente" style="left:1500px;top:4425px;width:330px" title="Caché en base de datos para operar sin red — pendiente"><div class="tn-txt">Caché en base de datos para operar sin red</div><div class="tn-nota">TASK-3. La BBV bloquea por IP ante pedidos concurrentes: la demo no puede depender de ella.</div><div class="tn-pie"><span class="sp">8 SP</span><span class="mat">—</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node task-node color-emerald rama-emerald st-pendiente" style="left:1500px;top:4576px;width:330px" title="Resolver la fecha del Boletín del BCB en cada corrida — pendiente"><div class="tn-txt">Resolver la fecha del Boletín del BCB en cada corrida</div><div class="tn-nota">Los enlaces llevan la fecha adentro y cambian cada trimestre, sin avisar.</div><div class="tn-pie"><span class="sp">3 SP</span><span class="mat">—</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node impact-node color-emerald rama-emerald" style="left:1040px;top:4850px;width:300px"><span class="tag-label">Impacto</span>Se sabe qué columna del cuadro puede construirse</div><div class="map-node task-node color-emerald rama-emerald st-hecho" style="left:1500px;top:4753px;width:330px" title="Relevar qué publica cada fuente formal, y con qué profundidad — hecho"><div class="tn-txt">Relevar qué publica cada fuente formal, y con qué profundidad</div><div class="tn-nota">Cerrada el 11-sep: las tres columnas formales tienen fuente gratis y descargada.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">—</span><span class="est est-hecho">hecho</span></div></div><div class="map-node task-node color-emerald rama-emerald st-pendiente" style="left:1500px;top:4907px;width:330px" title="Decidir en qué dos columnas va la profundidad — pendiente"><div class="tn-txt">Decidir en qué dos columnas va la profundidad</div><div class="tn-nota">Ninguna queda fuera por datos: las seis tienen fuente. Es decisión de alcance.</div><div class="tn-pie"><span class="sp">3 SP</span><span class="mat">—</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node impact-node color-emerald rama-emerald" style="left:1040px;top:5181px;width:300px"><span class="tag-label">Impacto</span>Las series cruzan el cambio de régimen sin mentir</div><div class="map-node task-node color-emerald rama-emerald st-pendiente" style="left:1500px;top:5084px;width:330px" title="Manejo declarado del quiebre estructural del 29 de junio de 2026 — pendiente"><div class="tn-txt">Manejo declarado del quiebre estructural del 29 de junio de 2026</div><div class="tn-nota">TASK-15. Los datos previos describen un régimen cambiario que ya no rige.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div><div class="map-node task-node color-emerald rama-emerald st-pendiente" style="left:1500px;top:5238px;width:330px" title="Conversión a bolivianos con opción de dólar y su fecha de corte — pendiente"><div class="tn-txt">Conversión a bolivianos con opción de dólar y su fecha de corte</div><div class="tn-nota">TASK-16. Una cifra en dólares sin su tipo de cambio envejece en una semana.</div><div class="tn-pie"><span class="sp">5 SP</span><span class="mat">BI II</span><span class="est est-pendiente">pendiente</span></div></div>
+      <div class="map-node goal-node" style="left:0px;top:2509px;width:420px"><div class="icon-bg"><i data-lucide="target"></i></div><span class="goal-tag">The Goal · ¿Por qué?</span><div class="goal-txt">Determinar las herramientas financieras que permiten explicar las variaciones de la inflación y del tipo de cambio en Bolivia durante la gestión 2026, con el propósito de generar información que facilite la toma de decisiones financieras.</div><div class="goal-met">Objetivo de Investigación Enfocado del proyecto. Los actores, impactos y entregables de este mapa son los que lo acercan o lo alejan.</div></div>
+    </div>
+  </div>
+</main>
+
+<footer class="bg-white border-t border-slate-200 px-6 py-3 flex items-center gap-3 flex-wrap overflow-x-auto custom-scrollbar z-40">
+  <span class="text-[10px] font-black uppercase tracking-[.15em] text-slate-400 mr-1 flex-none">Esfuerzo<br>por materia</span>
+  <div class="kpi"><b>109</b><span>BI II</span><em>17 entregables</em></div><div class="kpi"><b>5</b><span>Dir. Operaciones</span><em>1 entregables</em></div><div class="kpi"><b>13</b><span>IA y ML II</span><em>1 entregables</em></div><div class="kpi"><b>37</b><span>Minería</span><em>5 entregables</em></div><div class="kpi"><b>13</b><span>Optimización III</span><em>1 entregables</em></div><div class="kpi"><b>32</b><span>Sin materia</span><em>7 entregables</em></div>
+</footer>
+
+<script>
+lucide.createIcons();
+
+// las lineas se dibujan solas: cada una arranca con su propio largo como dasharray
+document.querySelectorAll("#svg-canvas path").forEach((p, i) => {
+  const L = p.getTotalLength();
+  p.style.setProperty("--len", L);
+  p.style.animationDelay = (300 + i * 12) + "ms";
+});
+document.querySelectorAll(".map-node").forEach((n, i) => {
+  n.style.animationDelay = (i * 14) + "ms";
+});
+
+// aislar una rama
+const canvas = document.getElementById("canvas");
+let fijada = null;
+function aislar(r){
+  document.querySelectorAll(".leg").forEach(b =>
+    b.setAttribute("aria-pressed", String(b.dataset.r === r)));
+  canvas.querySelectorAll(".map-node,.ln").forEach(el => el.classList.remove("on"));
+  if (!r){ canvas.classList.remove("aislar"); fijada = null; return; }
+  fijada = r;
+  canvas.classList.add("aislar");
+  canvas.querySelectorAll(".rama-" + r + ", .ln-" + r).forEach(el => el.classList.add("on"));
+}
+document.querySelectorAll(".leg").forEach(b =>
+  b.addEventListener("click", () => aislar(fijada === b.dataset.r ? null : b.dataset.r)));
+document.getElementById("limpiar").addEventListener("click", () => aislar(null));
+
+// zoom
+const scroller = document.getElementById("scroller");
+const zlabel = document.getElementById("zlabel");
+let z = 1;
+function aplicar(nuevo){
+  z = Math.min(1.4, Math.max(0.2, nuevo));
+  canvas.style.transform = "scale(" + z + ")";
+  canvas.style.transformOrigin = "0 0";
+  canvas.style.width  = (1950 * z) + "px";
+  canvas.style.height = (5532 * z) + "px";
+  zlabel.textContent = Math.round(z * 100) + "%";
+}
+document.getElementById("zin").addEventListener("click", () => aplicar(z + 0.1));
+document.getElementById("zout").addEventListener("click", () => aplicar(z - 0.1));
+document.getElementById("zfit").addEventListener("click", () =>
+  aplicar(Math.min(scroller.clientWidth / 1950, scroller.clientHeight / 5532)));
+
+// al abrir, el Goal centrado en pantalla
+window.addEventListener("load", () => {
+  scroller.scrollTop  = 2509 - scroller.clientHeight / 2 + 160;
+  scroller.scrollLeft = 0;
+});
+</script>
+</body>
+</html>
