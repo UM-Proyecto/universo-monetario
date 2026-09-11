@@ -1,0 +1,85 @@
+{
+  "_comentario": "Catálogo de fuentes del proyecto. Cada entrada declara qué aporta y en qué estado de verificación está. 'estado' se llena a mano cuando alguien abre el archivo y lo lee, no cuando el sitio responde: que una página devuelva 200 solo prueba que el sitio está en pie.",
+  "_estados": {
+    "portada-ok": "El sitio responde. No dice nada sobre el archivo concreto.",
+    "descargado": "Alguien bajó el archivo y lo abrió. Se anota fecha y qué contenía.",
+    "pendiente": "Todavía nadie la abrió."
+  },
+  "fuentes": [
+    {
+      "id": "bcb-portada",
+      "institucion": "Banco Central de Bolivia",
+      "aporta": "Punto de entrada. Desde aquí se navega al Boletín Estadístico vigente.",
+      "url": "https://www.bcb.gob.bo/",
+      "estado": "portada-ok"
+    },
+    {
+      "id": "bcb-estadisticas",
+      "institucion": "Banco Central de Bolivia",
+      "aporta": "Agregados monetarios, reservas internacionales netas y tipo de cambio oficial.",
+      "url": "https://www.bcb.gob.bo/?q=estadisticas",
+      "estado": "portada-ok",
+      "gotcha": "Los enlaces del Boletín Estadístico llevan la fecha de publicación dentro de la ruta y cambian cada trimestre. No se fijan: se resuelven desde esta página en cada corrida."
+    },
+    {
+      "id": "ine-portada",
+      "institucion": "Instituto Nacional de Estadística",
+      "aporta": "Punto de entrada.",
+      "url": "https://www.ine.gob.bo/",
+      "estado": "portada-ok"
+    },
+    {
+      "id": "ine-economicas",
+      "institucion": "Instituto Nacional de Estadística",
+      "aporta": "IPC empalmado y PIB anual.",
+      "url": "https://www.ine.gob.bo/index.php/estadisticas-economicas/",
+      "estado": "portada-ok",
+      "nota": "A diferencia del BCB, los enlaces del INE son permanentes y sí se pueden fijar."
+    },
+    {
+      "id": "asfi-portada",
+      "institucion": "Autoridad de Supervisión del Sistema Financiero",
+      "aporta": "Boletines del mercado de valores, reporte de inclusión financiera, agregados de operaciones con activos virtuales y el registro de proveedores autorizados.",
+      "url": "https://www.asfi.gob.bo/",
+      "estado": "portada-ok"
+    },
+    {
+      "id": "aduana-portada",
+      "institucion": "Aduana Nacional de Bolivia",
+      "aporta": "Estadísticas de importación por partida, origen y valor. Es el denominador del problema.",
+      "url": "https://www.aduana.gob.bo/",
+      "estado": "portada-ok"
+    },
+    {
+      "id": "sin-normativa",
+      "institucion": "Servicio de Impuestos Nacionales",
+      "aporta": "Texto de la RND 102400000021, «Respaldo de Transacciones con Documentos de Pago».",
+      "url": "https://www.impuestos.gob.bo/normativa",
+      "estado": "portada-ok"
+    },
+    {
+      "id": "paralelo-bo",
+      "institucion": "paralelo.bo (privada)",
+      "aporta": "Tipo de cambio paralelo, con histórico desde 2024. Ninguna fuente oficial lo publica.",
+      "url": "https://paralelo.bo/",
+      "estado": "portada-ok"
+    }
+  ],
+  "rutas_descartadas": [
+    {
+      "url": "https://www.bcb.gob.bo/librerias/indicadores/otras/tipocambio.php",
+      "resultado": "404",
+      "leccion": "Ruta que circula en material viejo y ya no existe."
+    },
+    {
+      "url": "https://www.asfi.gob.bo/index.php/int-fin-estadisticas.html",
+      "resultado": "404",
+      "leccion": "Las rutas internas de ASFI no son estables; hay que navegar desde la portada."
+    },
+    {
+      "url": "https://www.aduana.gob.bo/aduana7/content/estadisticas",
+      "resultado": "404",
+      "leccion": "Igual que ASFI."
+    }
+  ]
+}

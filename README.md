@@ -20,7 +20,21 @@ Intelligence II, materia en la que el proyecto se desarrolla.
 | Ruta | Contenido |
 |---|---|
 | `PROYECTO.md` | Planteamiento, problema específico, objetivos, alcance y datos previstos. Es el documento de referencia. |
+| `REPRODUCIBILIDAD.md` | Cómo rehacer por tu cuenta todo lo que afirmamos, y qué todavía no se puede rehacer. |
+| `fuentes.json` | Catálogo de fuentes con lo que aporta cada una y su estado de verificación. |
+| `scripts/verificar_fuentes.py` | Comprueba que las fuentes declaradas siguen en pie, con control negativo. |
 | `docs_ini/` | Investigación inicial asistida por agente de IA: evidencia del problema, marco normativo y catálogo de fuentes de datos. |
+
+## Comprobalo vos
+
+```bash
+git clone https://github.com/UM-Proyecto/universo-monetario.git
+cd universo-monetario
+python3 scripts/verificar_fuentes.py
+```
+
+Sin dependencias que instalar: solo la biblioteca estándar de Python 3.8 o superior. Los detalles
+y los límites de esa comprobación están en `REPRODUCIBILIDAD.md`.
 
 ## Estado
 
