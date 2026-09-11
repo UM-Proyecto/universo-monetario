@@ -1,6 +1,6 @@
 # Fuentes de datos — qué baja, cómo baja y qué se rompe
 
-> Investigación inicial asistida por agente de IA (Claude Code, modelo Opus 5), 10 de septiembre
+> Investigación inicial asistida por agente de IA en la terminal, 10 de septiembre
 > de 2026. El criterio de esta lista es que una fuente entra como **verificada** solo si alguien
 > descargó el archivo y lo abrió. Que la página responda no es verificación: el modo de falla
 > dominante de estas fuentes no es el error, es devolver algo que se lee bien y contesta otra

@@ -101,8 +101,8 @@ con lo que devuelven esos comandos, el que está equivocado es este archivo.
 
 ## Cómo se produjo la investigación inicial
 
-Los tres documentos de `docs_ini/` los redactó un agente de inteligencia artificial (Claude Code,
-modelo Opus 5) a partir de la base de conocimiento del equipo, y cada uno lo declara en su
+Los tres documentos de `docs_ini/` los redactó un agente de inteligencia artificial
+a partir de la base de conocimiento del equipo, y cada uno lo declara en su
 encabezado con la fecha.
 
 Eso significa dos cosas para quien los lee. La primera es que el texto es revisable: no hay nada

@@ -1,6 +1,6 @@
 # Marco normativo — la norma que define el problema y el límite de la herramienta
 
-> Investigación inicial asistida por agente de IA (Claude Code, modelo Opus 5), 10 de septiembre
+> Investigación inicial asistida por agente de IA en la terminal, 10 de septiembre
 > de 2026. Este documento hace dos cosas: identifica y transcribe la norma que sostiene el
 > problema del importador, y delimita hasta dónde puede llegar legalmente una herramienta de
 > análisis en Bolivia. No es asesoramiento jurídico: es el relevamiento de las normas que el

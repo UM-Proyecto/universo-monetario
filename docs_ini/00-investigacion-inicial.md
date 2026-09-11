@@ -1,7 +1,7 @@
 # Investigación inicial — el problema del importador que paga en dólares digitales
 
-> **Cómo se produjo este documento.** Lo escribió un agente de IA (Claude Code, modelo Opus 5)
-> corriendo en la terminal del equipo, sobre la base de conocimiento del proyecto y de una ronda
+> **Cómo se produjo este documento.** Lo escribió un agente de IA corriendo en la terminal del
+> equipo, sobre la base de conocimiento del proyecto y de una ronda
 > previa de verificación de fuentes. Fecha de redacción: 10 de septiembre de 2026. Las cifras van
 > con su fecha de corte porque varias envejecen rápido, y al final hay una sección de advertencias
 > de citación que registra los errores que ya se cometieron una vez con este mismo material.
