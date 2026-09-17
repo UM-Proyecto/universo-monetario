@@ -1,4 +1,5 @@
 {
+  "_REEMPLAZADO_POR": "docs/CATALOGO-FUENTES.md (documento) y docs/fuentes.json (legible por maquina), desde el 17 de septiembre de 2026. Este archivo se conserva para no romper lo que ya lo lee, pero su campo 'estado' esta DESACTUALIZADO: las 8 entradas de aca dicen 'portada-ok', que significa que nadie abrio el documento. En el catalogo nuevo hay 26 entradas y 10 de ellas estan descargadas y abiertas, con fecha, contenido y periodo. Ademas este archivo contiene un error de contenido corregido alla: la entrada 'aduana-portada' dice que la Aduana publica estadisticas de importacion, y no las publica; ese dato lo publica el INE.",
   "_comentario": "Catálogo de fuentes del proyecto. Cada entrada declara qué aporta y en qué estado de verificación está. 'estado' se llena a mano cuando alguien abre el archivo y lo lee, no cuando el sitio responde: que una página devuelva 200 solo prueba que el sitio está en pie.",
   "_estados": {
     "portada-ok": "El sitio responde. No dice nada sobre el archivo concreto.",
