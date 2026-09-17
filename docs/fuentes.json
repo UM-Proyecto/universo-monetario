@@ -1,0 +1,266 @@
+{
+ "_catalogo": "Catalogo unico de fuentes del proyecto Universo Monetario. REEMPLAZA al fuentes.json de 8 entradas del repo del equipo, a docs/FUENTES.md y a docs/FUENTES-formales.md, que se contradecian por ser de momentos distintos.",
+ "_documento_humano": "docs/CATALOGO-FUENTES.md",
+ "_fecha_corte": "2026-09-17",
+ "_estados": {
+  "descargada-y-abierta": "Alguien bajo el archivo, lo abrio y anoto filas, columnas y rango de fechas. Es el unico estado que cuenta como evidencia.",
+  "responde": "El sitio contesta y su control negativo esta sano, pero nadie abrio el documento concreto.",
+  "su-200-no-prueba-nada": "El dominio devuelve exito tambien a rutas inventadas. El codigo de respuesta es informacion nula.",
+  "no-publica-lo-que-se-creia": "La entrada anterior del catalogo describia algo que la fuente no tiene."
+ },
+ "_como_se_mide": "python3 scripts/verificar_fuentes.py — pide cada URL junto a una ruta inventada del mismo dominio y compara los CUERPOS, no los codigos.",
+ "fuentes": [
+  {
+   "id": "ine-importaciones",
+   "institucion": "Instituto Nacional de Estadistica",
+   "aporta": "Registros de importacion por mes, aduana, via, medio, pais y partida NANDINA",
+   "url": "https://nube.ine.gob.bo/",
+   "estado": "descargada-y-abierta",
+   "descargada": "2026-09-16",
+   "contenido": "4 bases XLSX: 2023, 2024, 2025 y ene-jul 2026. 1.433.610 registros, 201 MB",
+   "periodo": "2023-01 a 2026-07",
+   "control_negativo": "ruta inventada del mismo dominio: 503, 8.239 bytes de HTML",
+   "limite": "Cada registro es una AGREGACION. No hay identificador de importador ni operaciones individuales: no sirve para contar operaciones sobre Bs 50.000 por empresa."
+  },
+  {
+   "id": "bcb-tasas-pasivas",
+   "institucion": "Banco Central de Bolivia",
+   "aporta": "Tasas pasivas por entidad y plazo, de 30 a 1.080 dias",
+   "url": "https://www.bcb.gob.bo/?q=estadisticas",
+   "estado": "descargada-y-abierta",
+   "descargada": "2026-09-11",
+   "contenido": "302 de 308 meses; faltan abr-ago 2017 y jul 2019",
+   "periodo": "2001-01 a 2026-08",
+   "gotcha": "La pagina lista 55 .xlsx y uno es de Reservas Internacionales, de OTRA seccion. Filtrar por la ruta de la seccion, nunca por el orden en la pagina."
+  },
+  {
+   "id": "asfi-boletin-mv",
+   "institucion": "ASFI",
+   "aporta": "Tasas ponderadas por plazo y moneda, participantes de fondos, clientes de agencias de bolsa",
+   "url": "https://www.asfi.gob.bo/",
+   "estado": "descargada-y-abierta",
+   "descargada": "2026-09-11",
+   "contenido": "135 boletines XLSX de 21 hojas",
+   "periodo": "2015-01 a 2026-04",
+   "correcciones": [
+    "Hojas 12/13/14: 6, 49 y 60 filas CON DATO, no 174/137/586 (esas son dimensiones de formato)",
+    "Hoja 12 = mercado PRIMARIO y hoja 13 = SECUNDARIO, no 'compraventa' e 'idem ME'",
+    "Abril-2026: 6 operaciones en primario, 49 en secundario, 60 en reporto"
+   ],
+   "quiebre": "Termina en abr-2026: TODAVIA no cruza el 29-jun-2026. El primer boletin posterior a junio si lo cruza."
+  },
+  {
+   "id": "asfi-fondos-safi",
+   "institucion": "ASFI",
+   "aporta": "Valor cuota, participantes, tasas, liquidez y cartera por fondo",
+   "url": "https://www.asfi.gob.bo/",
+   "estado": "descargada-y-abierta",
+   "descargada": "2026-09-11",
+   "contenido": "100 fondos, 382.424 filas diarias",
+   "periodo": "2010-01-01 a 2026-09-08",
+   "nota": "Es una aplicacion de reportes: hace falta navegador para resolver la direccion, no para descargar."
+  },
+  {
+   "id": "asfi-consolidado-l01t02",
+   "institucion": "ASFI",
+   "aporta": "Texto consolidado vigente sobre activos virtuales",
+   "url": "https://servdmzw.asfi.gob.bo/circular/Textos/L01T02.pdf",
+   "estado": "descargada-y-abierta",
+   "descargada": "2026-09-15",
+   "contenido": "207 paginas",
+   "periodo": "vigente al 2026-09-15",
+   "nota": "Es lo citable, NO la Resolucion 540/2025 suelta. Cadena real: 540/2025 -> 1203/2025 -> 373/2026. Plazo vigente: 30-jun-2026. Volver a bajarlo antes de imprimir: ASFI toco ese capitulo tres veces en catorce meses."
+  },
+  {
+   "id": "bbv-tpp",
+   "institucion": "Bolsa Boliviana de Valores",
+   "aporta": "Tasas promedio ponderadas, PDF diario por fecha",
+   "url": "https://www.bbv.com.bo/",
+   "estado": "descargada-y-abierta",
+   "descargada": "2026-09-11",
+   "periodo": "2022-06-30 a 2026-09-11",
+   "gotcha": "La BBV BLOQUEA POR IP ante pedidos concurrentes, unos veinte minutos. Sus tablas web no exponen endpoint de datos y no hay historico gratuito."
+  },
+  {
+   "id": "paralelo-bo",
+   "institucion": "paralelo.bo",
+   "aporta": "Mediana diaria del dolar paralelo; FUENTE PRIMARIA del historico",
+   "url": "https://paralelo.bo/api/v1/historical.csv",
+   "estado": "descargada-y-abierta",
+   "descargada": "2026-09-17",
+   "contenido": "773 medianas diarias, sin hueco",
+   "periodo": "2024-08-06 a 2026-09-17",
+   "licencia": "CC-BY 4.0, declarada en la cabecera del CSV",
+   "control_negativo": "/api/v1/historicalXYZ.csv da 404",
+   "correccion_de_estado": "docs/FUENTES.md la daba por CAIDA al 1-sep-2026. Esta VIVA: medido hoy, portada 200 con control 404, API respondiendo y OpenAPI con ocho endpoints.",
+   "gotcha": "La ultima fila del CSV no esta consolidada: el 17-sep publicaba 9,80 mientras su API en vivo daba 10,73. Descartar el dia en curso."
+  },
+  {
+   "id": "dolarblue",
+   "institucion": "dolarbluebolivia.click",
+   "aporta": "Tick del paralelo Y del oficial en la misma fila; CONTRASTE independiente",
+   "url": "https://api.dolarbluebolivia.click/v1/chart/all.csv",
+   "estado": "descargada-y-abierta",
+   "descargada": "2026-09-17",
+   "contenido": "77.358 observaciones de tick",
+   "periodo": "2024-07-21 a 2026-09-17",
+   "licencia": "Terminos prohiben 'copiar contenido sin autorizacion'. Se cita, NO se redistribuye.",
+   "control_negativo": "/v1/chart/inventado-abc123.csv da 404 con cuerpo {\"detail\":\"Not Found\"}",
+   "gotcha": "'compra' y 'venta' estan INVERTIDAS respecto de paralelo.bo. Comparar solo punto medio contra punto medio."
+  },
+  {
+   "id": "binance-p2p-propia",
+   "institucion": "Captura propia del proyecto",
+   "aporta": "Libro completo de anuncios USDT/BOB, una fila por anuncio",
+   "url": "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search",
+   "estado": "descargada-y-abierta",
+   "descargada": "continua desde 2026-09-09",
+   "contenido": "44.373 filas, 136 corridas horarias, cero huecos al 17-sep",
+   "periodo": "libro completo desde 2026-09-11 14h; resumen desde 2026-09-09 20h",
+   "nota": "Es la UNICA serie del proyecto que no se puede rehacer: el libro de hoy no existe manana. Ver TASK-48."
+  },
+  {
+   "id": "bcb-portada",
+   "url": "https://www.bcb.gob.bo/",
+   "estado": "responde",
+   "medido": "2026-09-17",
+   "control_negativo": "ruta inventada del mismo dominio: 404",
+   "nota": "Responde con control sano, pero nadie abrio el documento concreto desde esta URL."
+  },
+  {
+   "id": "bcb-estadisticas",
+   "url": "https://www.bcb.gob.bo/?q=estadisticas",
+   "estado": "responde",
+   "medido": "2026-09-17",
+   "control_negativo": "ruta inventada del mismo dominio: 404",
+   "nota": "Responde con control sano, pero nadie abrio el documento concreto desde esta URL.",
+   "gotcha": "Los enlaces del Boletin Estadistico llevan la fecha de publicacion en la ruta y CAMBIAN cada trimestre: se resuelven en cada corrida, no se fijan."
+  },
+  {
+   "id": "ine-portada",
+   "url": "https://www.ine.gob.bo/",
+   "estado": "responde",
+   "medido": "2026-09-17",
+   "control_negativo": "ruta inventada del mismo dominio: 404",
+   "nota": "Responde con control sano, pero nadie abrio el documento concreto desde esta URL."
+  },
+  {
+   "id": "ine-economicas",
+   "url": "https://www.ine.gob.bo/index.php/estadisticas-economicas/",
+   "estado": "responde",
+   "medido": "2026-09-17",
+   "control_negativo": "ruta inventada del mismo dominio: 404",
+   "nota": "Responde con control sano, pero nadie abrio el documento concreto desde esta URL."
+  },
+  {
+   "id": "asfi-portada",
+   "url": "https://www.asfi.gob.bo/",
+   "estado": "responde",
+   "medido": "2026-09-17",
+   "control_negativo": "ruta inventada del mismo dominio: 404",
+   "nota": "Responde con control sano, pero nadie abrio el documento concreto desde esta URL."
+  },
+  {
+   "id": "sin-normativa",
+   "institucion": "Servicio de Impuestos Nacionales",
+   "aporta": "Texto de la RND 102400000021",
+   "url": "https://www.impuestos.gob.bo/normativa",
+   "estado": "su-200-no-prueba-nada",
+   "medido": "2026-09-17",
+   "gotcha": "SOFT-404 confirmado: /normativa y /normativa-inventada-abc123 devuelven EXACTAMENTE 148.155 bytes las dos, el mismo <title> 'Impuestos - SIN', y sus 56 lineas de diferencia son todas imagenes del carrusel. El tamano coincide y el hash NO: un verificador que compare hashes lo deja pasar."
+  },
+  {
+   "id": "gaceta-oficial",
+   "institucion": "Gaceta Oficial de Bolivia",
+   "aporta": "Textos de ley",
+   "url": "https://gacetaoficialdebolivia.gob.bo/normas/descargarPdf/",
+   "estado": "su-200-no-prueba-nada",
+   "medido": "2026-09-15",
+   "gotcha": "Devuelve 200 y un PDF REAL para cualquier identificador. El falso trae una pagina sin una letra; el verdadero, 29 con la ley. Hay que abrir el archivo y contar."
+  },
+  {
+   "id": "bcb-tc-historico",
+   "institucion": "Banco Central de Bolivia",
+   "aporta": "Tabla anual de cotizaciones oficiales",
+   "url": "https://www.bcb.gob.bo/tiposDeCambioHistorico/pdf.php",
+   "estado": "su-200-no-prueba-nada",
+   "medido": "2026-09-16",
+   "gotcha": "?anio=1899 devuelve 200 con application/pdf y adentro trae la tabla del ANO 2000. El archivo es real, abre bien, y no es el que se pidio."
+  },
+  {
+   "id": "udape",
+   "institucion": "UDAPE",
+   "estado": "su-200-no-prueba-nada",
+   "url": "https://www.udape.gob.bo/",
+   "medido": "2026-09-15",
+   "gotcha": "Redirige cualquier ruta a la portada: la inventada devuelve 215.729 bytes, exactamente los mismos que la buena."
+  },
+  {
+   "id": "aduana-portada",
+   "institucion": "Aduana Nacional de Bolivia",
+   "url": "https://www.aduana.gob.bo/",
+   "estado": "no-publica-lo-que-se-creia",
+   "medido": "2026-09-17",
+   "correccion": "La entrada anterior decia que aporta 'estadisticas de importacion por partida, origen y valor'. ES FALSO: la palabra 'estadistica' no aparece ni una vez en sus 80 enlaces, y /aduana7/content/estadisticas da 404 real. El dato lo publica el INE. Se conserva como punto de entrada normativo, no como fuente de datos."
+  },
+  {
+   "id": "mefp-rm245",
+   "institucion": "Ministerio de Economia y Finanzas Publicas",
+   "aporta": "RM 245/2026, flotacion cambiaria",
+   "url": "https://www.economiayfinanzas.gob.bo/",
+   "estado": "descargada-y-abierta",
+   "descargada": "2026-09-16",
+   "gotcha": "Cadena TLS INCOMPLETA: curl sin -k da 000 y parece caido. Con -k responde 200 y el control da 404. Ademas el PDF son TRES IMAGENES JPEG sin capa de texto: cualquier extractor devuelve vacio (control positivo el mismo minuto: 6.015 caracteres de otro PDF).",
+   "nota": "La RM es del 26-jun-2026; el 29 es la fecha de VIGENCIA."
+  },
+  {
+   "id": "bcb-activos-virtuales",
+   "institucion": "Banco Central de Bolivia",
+   "estado": "responde",
+   "url": "https://www.bcb.gob.bo/",
+   "medido": "2026-09-16",
+   "gotcha": "Las paginas de activos virtuales devuelven 403 y una fecha inventada devuelve 404. La diferencia importa: EXISTEN y estan restringidas, no que no esten.",
+   "nota": "El BCB tomaba el precio USDT/BOB del P2P de Binance ponderado por volumen, la misma fuente que capturamos nosotros. Esa serie oficial ya no es publica."
+  },
+  {
+   "id": "yfinance",
+   "clase": "acciones y ETF de bonos",
+   "estado": "responde",
+   "medido": "2026-09-01",
+   "nota": "Se rompe cada pocos meses cuando Yahoo cambia algo. Ver TASK-53.",
+   "ambito": "internacional"
+  },
+  {
+   "id": "binance-publico",
+   "clase": "criptomonedas",
+   "estado": "responde",
+   "medido": "2026-09-01",
+   "nota": "",
+   "ambito": "internacional"
+  },
+  {
+   "id": "frankfurter",
+   "clase": "divisas",
+   "estado": "responde",
+   "medido": "2026-09-01",
+   "nota": "Detras de Cloudflare: responde 403 'error code: 1010' al User-Agent por defecto de urllib. Con curl da 200. Sin declararlo, parece que la serie no existe.",
+   "ambito": "internacional"
+  },
+  {
+   "id": "open-er-api",
+   "clase": "divisas",
+   "estado": "responde",
+   "medido": "2026-09-01",
+   "nota": "Viva pero SIN historico gratis: por eso no se usa.",
+   "ambito": "internacional"
+  },
+  {
+   "id": "fred",
+   "clase": "bonos",
+   "estado": "responde",
+   "medido": "2026-09-01",
+   "nota": "Viva y sin clave pero TRUNCADA en los indices de retorno total: por eso los bonos van por yfinance.",
+   "ambito": "internacional"
+  }
+ ]
+}
