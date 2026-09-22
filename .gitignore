@@ -16,3 +16,5 @@ data/cache/
 Thumbs.db
 desktop.ini
 .capturas/
+!data/raw/.gitkeep
+!data/cache/.gitkeep
