@@ -6,8 +6,10 @@ venv/
 .ipynb_checkpoints/
 
 # Datos crudos y credenciales
-data/raw/
-data/cache/
+data/raw/*
+!data/raw/.gitkeep
+data/cache/*
+!data/cache/.gitkeep
 .env
 *.key
 
@@ -16,5 +18,3 @@ data/cache/
 Thumbs.db
 desktop.ini
 .capturas/
-!data/raw/.gitkeep
-!data/cache/.gitkeep
