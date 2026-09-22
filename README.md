@@ -46,7 +46,7 @@ reutilizable aparte de los cuadernos, y las salidas en su propia carpeta.
 | `reports/mapa-impacto.html` | La versión navegable del diagrama, con filtros por rama. |
 | `reports/arbol-problemas.html` | Árbol de problemas: causas, problema central y efectos. |
 | `reports/veredicto-rumbo.pdf` | Veredicto sobre qué eje debe seguir el proyecto, con la evidencia que lo sostiene. |
-| `reports/validacion-del-problema.docx` | Entrega de Validación de problemas: guion de entrevistas, registro de campo, template «Tu mejor entrevista» y contraste contra el Mapa de Propuesta de Valor. |
+| `reports/validacion-del-problema.docx` | Entrega de Validación de problemas: registro de entrevistas, template «Tu mejor entrevista», mapa de empatía y contraste contra el Mapa de Propuesta de Valor. |
 | `src/mapa_datos.py` | Fuente única de los datos del mapa de impacto. |
 | `src/verificar_fuentes.py` | Comprueba que las fuentes declaradas siguen en pie, con control negativo. |
 
