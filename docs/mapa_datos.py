@@ -6,10 +6,13 @@ Los cuatro actores son los que pueden acercar o alejar el objetivo. Quedaron fue
 del mapa el tribunal y los docentes -- deciden sobre el trabajo, no sobre el problema --
 y los reguladores, cuyo efecto entra por los impactos del contador y del importador."""
 
-GOAL = ("Determinar las herramientas financieras que permiten explicar las variaciones "
-        "de la inflación y del tipo de cambio en Bolivia durante la gestión 2026, con el "
-        "propósito de generar información que facilite la toma de decisiones financieras.")
-GOAL_METRICA = ("Objetivo de Investigación Enfocado del proyecto. Los actores, impactos y entregables de este mapa son los que lo acercan o lo alejan.")
+GOAL = ("Determinar qué opciones disponibles para un boliviano protegieron el valor de su "
+        "dinero frente a la inflación y al tipo de cambio entre 2023 y 2026, a qué costo de "
+        "entrada, con qué liquidez y con qué respaldo documental.")
+GOAL_METRICA = ("Objetivo de Investigación Enfocado del proyecto, corregido el 17-sep-2026: el verbo "
+                "era «explicar» y las herramientas financieras no explican la inflación, reaccionan a "
+                "ella. Las cuatro dimensiones del enunciado son las del cuadro comparativo. Corrige la "
+                "formulación; el alcance queda abierto hasta que el equipo ratifique el eje.")
 
 ACTORES = [
     ("ahorrista", "Ahorrista sin formación financiera",

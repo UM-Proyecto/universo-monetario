@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Árbol de problemas — Universo Monetario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,700;6..96,900&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#f2f2ef;
+  --surface:#ffffff;
+  --surface-2:#fbfbf9;
+  --ink:#15181c;
+  --ink-soft:#585f68;
+  --ink-faint:#666c74;
+  --rule:#dcdcd5;
+  --rule-soft:#e9e9e3;
+  --matiz:352;
+  --accent:oklch(0.45 0.13 var(--matiz));
+  --accent-soft:oklch(0.95 0.035 var(--matiz));
+  /* --accent esta calibrado como color de TEXTO. Usarlo como superficie a sangre
+     en oscuro da un rosa claro que invierte el tema. La superficie va aparte. */
+  --accent-surface:oklch(0.42 0.13 var(--matiz));
+  --on-accent:#ffffff;
+  --gate:#8a5209;
+  --gate-soft:#f6ecdc;
+  --done:#2f6d3a;
+  --done-soft:#e4f0e5;
+  --f-display:"Bodoni Moda",Georgia,"Times New Roman",serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Menlo,monospace;
+  --measure:68ch;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#101317; --surface:#171b20; --surface-2:#1c2127;
+    --ink:#e7e5e0; --ink-soft:#a2a9b2; --ink-faint:#828a93;
+    --rule:#2b3138; --rule-soft:#232930;
+    --accent:oklch(0.78 0.13 var(--matiz));
+    --accent-soft:oklch(0.28 0.05 var(--matiz));
+    --accent-surface:oklch(0.30 0.11 var(--matiz));
+    --on-accent:#f7eef2;
+    --gate:#e0a04a; --gate-soft:#2e2415;
+    --done:#7fc088; --done-soft:#1a2c1d;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#101317; --surface:#171b20; --surface-2:#1c2127;
+  --ink:#e7e5e0; --ink-soft:#a2a9b2; --ink-faint:#828a93;
+  --rule:#2b3138; --rule-soft:#232930;
+  --accent:oklch(0.78 0.13 var(--matiz));
+  --accent-soft:oklch(0.28 0.05 var(--matiz));
+  --accent-surface:oklch(0.30 0.11 var(--matiz));
+  --on-accent:#f7eef2;
+  --gate:#e0a04a; --gate-soft:#2e2415;
+  --done:#7fc088; --done-soft:#1a2c1d;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--f-body); font-size:16px; line-height:1.62;
+  overflow-x:hidden;
+}
+.num,td.num,.fig{font-variant-numeric:tabular-nums}
+:where(a,button,summary):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---- disciplina: MEDIDA CENTRADA ------------------------------------- */
+.wrap{max-width:var(--measure); margin-inline:auto; padding-inline:16px}
+/* la firma: un solo bloque escapa la medida */
+.bleed{max-width:1180px; margin-inline:auto; padding-inline:16px}
+
+/* ---- familia: AFICHE DE ALTO CONTRASTE -------------------------------- */
+header.poster{
+  background:var(--accent-surface); color:var(--on-accent);
+  padding:clamp(40px,7vw,86px) 0 clamp(30px,5vw,54px);
+  border-bottom:6px solid var(--ink);
+}
+.kicker{
+  font-family:var(--f-mono); font-size:11px; font-weight:600;
+  letter-spacing:.2em; text-transform:uppercase; opacity:.9; margin:0 0 18px;
+  padding-right:76px;
+}
+h1{
+  font-family:var(--f-display); font-weight:900;
+  font-size:clamp(46px,11.5vw,96px); line-height:.92;
+  letter-spacing:-.02em; margin:0 0 20px;
+}
+h1 em{font-style:italic; font-weight:400}
+.dek{font-size:clamp(16px,2.1vw,19px); line-height:1.5; margin:0; max-width:56ch; opacity:.95}
+.stamp{
+  margin-top:28px; padding-top:18px; border-top:1px solid rgba(255,255,255,.35);
+  display:flex; flex-wrap:wrap; gap:8px 28px;
+  font-family:var(--f-mono); font-size:11.5px; letter-spacing:.04em;
+}
+:root[data-theme="dark"] .stamp, :root:not([data-theme="light"]) .stamp{}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .stamp{border-top-color:rgba(16,19,23,.3)}}
+.stamp b{font-weight:600}
+
+main{padding-block:clamp(36px,6vw,64px) 96px}
+
+/* ---- espina ----------------------------------------------------------- */
+section{margin-block:clamp(44px,7vw,80px)}
+.sec-head{margin-bottom:26px}
+.sec-n{
+  font-family:var(--f-mono); font-size:11px; font-weight:600; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--accent); display:block; margin-bottom:10px;
+}
+h2{
+  font-family:var(--f-display); font-weight:700;
+  font-size:clamp(30px,5.2vw,44px); line-height:1.03; letter-spacing:-.015em;
+  margin:0 0 10px;
+}
+.sec-sub{margin:0; color:var(--ink-soft); font-size:15.5px}
+h3{font-family:var(--f-body); font-size:17px; font-weight:600; margin:0 0 8px; line-height:1.3}
+p{margin:0 0 15px}
+p.lead{font-size:18px; line-height:1.55}
+
+/* ---- el árbol --------------------------------------------------------- */
+.canopy,.roots{display:grid; gap:14px; grid-template-columns:repeat(2,1fr)}
+.node{
+  background:var(--surface); border:1px solid var(--rule);
+  border-top:3px solid var(--accent); padding:18px 18px 16px;
+}
+.roots .node{border-top:1px solid var(--rule); border-bottom:3px solid var(--accent)}
+.node .tag{
+  font-family:var(--f-mono); font-size:10.5px; font-weight:600; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent); display:block; margin-bottom:9px;
+}
+.node p{margin:0; font-size:14.5px; line-height:1.55; color:var(--ink-soft)}
+.node p + p{margin-top:9px}
+.node strong{color:var(--ink); font-weight:600}
+
+.trunk{
+  margin:0 auto; max-width:none;
+  background:var(--accent-surface); color:var(--on-accent);
+  padding:clamp(26px,4vw,40px) clamp(22px,4vw,38px);
+  border:1px solid var(--ink);
+}
+.trunk .tag{
+  font-family:var(--f-mono); font-size:10.5px; font-weight:600; letter-spacing:.16em;
+  text-transform:uppercase; opacity:.85; display:block; margin-bottom:12px;
+}
+.trunk p{
+  margin:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(19px,3.1vw,26px); line-height:1.34;
+}
+.stem{
+  width:3px; height:38px; margin:0 auto; background:var(--accent-surface); opacity:.45;
+}
+.stem.long{height:52px}
+
+/* ---- chips ------------------------------------------------------------ */
+.chip{
+  display:inline-block; font-family:var(--f-mono); font-size:10.5px; font-weight:600;
+  letter-spacing:.07em; text-transform:uppercase; padding:3px 8px;
+  border-radius:2px; margin-top:12px;
+}
+.chip-ev{background:var(--done-soft); color:var(--done)}
+.chip-hy{background:var(--gate-soft); color:var(--gate)}
+
+/* ---- 5 porqués -------------------------------------------------------- */
+.why{border-left:2px solid var(--rule); padding-left:22px; margin-top:8px}
+.why-head{
+  font-family:var(--f-mono); font-size:12px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent); margin:0 0 4px;
+}
+.why h3{font-size:19px; margin-bottom:18px}
+ol.chain{list-style:none; margin:0; padding:0; counter-reset:w}
+ol.chain li{
+  counter-increment:w; position:relative; padding-left:40px; padding-bottom:20px;
+}
+ol.chain li::before{
+  content:counter(w); position:absolute; left:0; top:1px;
+  width:25px; height:25px; border-radius:50%;
+  background:var(--accent-surface); color:var(--on-accent);
+  font-family:var(--f-mono); font-size:12px; font-weight:600;
+  display:grid; place-items:center;
+}
+ol.chain li::after{
+  content:""; position:absolute; left:12px; top:29px; bottom:3px; width:1px;
+  background:var(--rule);
+}
+ol.chain li:last-child{padding-bottom:0}
+ol.chain li:last-child::after{display:none}
+ol.chain p{margin:0; font-size:15px; line-height:1.55; color:var(--ink-soft)}
+ol.chain b{color:var(--ink); font-weight:600}
+.landing{
+  margin-top:20px; margin-left:40px; padding:14px 16px;
+  background:var(--accent-soft); border-left:3px solid var(--accent);
+  font-size:14.5px; line-height:1.5;
+}
+.landing b{font-weight:600}
+
+/* ---- LA FIRMA: tabla a ancho completo, rompe la medida ---------------- */
+.signature{margin-block:clamp(40px,6vw,72px)}
+.tscroll{overflow-x:auto; border:1px solid var(--rule); background:var(--surface)}
+table.matrix{border-collapse:collapse; width:100%; min-width:840px; font-size:14.5px}
+table.matrix th,table.matrix td{
+  text-align:left; vertical-align:top; padding:15px 18px;
+  border-bottom:1px solid var(--rule-soft);
+}
+table.matrix thead th{
+  background:var(--surface-2); border-bottom:2px solid var(--ink);
+  font-family:var(--f-mono); font-size:11px; font-weight:600;
+  letter-spacing:.11em; text-transform:uppercase; white-space:nowrap;
+}
+table.matrix thead th.reco{background:var(--accent-surface); color:var(--on-accent)}
+table.matrix tbody th{
+  font-weight:500; color:var(--ink-soft); width:24%;
+  border-right:1px solid var(--rule);
+}
+table.matrix td{color:var(--ink-soft); width:38%}
+table.matrix td.col-a{background:var(--accent-soft); color:var(--ink)}
+table.matrix tbody tr:last-child th,table.matrix tbody tr:last-child td{border-bottom:none}
+table.matrix b{color:var(--ink); font-weight:600}
+.yes{color:var(--done); font-weight:600}
+.no{color:var(--gate); font-weight:600}
+.tcap{
+  font-family:var(--f-mono); font-size:11px; letter-spacing:.06em;
+  color:var(--ink-faint); margin:0 0 12px; text-transform:uppercase;
+}
+
+/* ---- fórmula final ---------------------------------------------------- */
+.formula{border:2px solid var(--ink); background:var(--surface)}
+.formula .row{display:flex; gap:0; border-bottom:1px solid var(--rule); flex-wrap:wrap}
+.formula .row:last-child{border-bottom:none}
+.formula .lbl{
+  flex:0 0 150px; padding:15px 16px; background:var(--surface-2);
+  border-right:1px solid var(--rule);
+  font-family:var(--f-mono); font-size:11px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--accent);
+}
+.formula .val{flex:1 1 300px; padding:15px 18px; font-size:15px; line-height:1.5}
+.verdict{
+  margin-top:18px; padding:16px 18px; background:var(--done-soft);
+  border-left:3px solid var(--done); font-size:15px;
+}
+.verdict b{color:var(--done)}
+
+/* ---- advertencias ----------------------------------------------------- */
+.warn{
+  background:var(--surface); border:1px solid var(--rule);
+  border-left:3px solid var(--gate); padding:18px 20px; margin-bottom:14px;
+}
+.warn h3{color:var(--gate); margin-bottom:7px}
+.warn p{margin:0; font-size:14.5px; line-height:1.55; color:var(--ink-soft)}
+
+/* ---- pie -------------------------------------------------------------- */
+footer{
+  border-top:1px solid var(--rule); margin-top:70px; padding-top:22px;
+  font-family:var(--f-mono); font-size:11.5px; line-height:1.8; color:var(--ink-faint);
+}
+
+/* ---- toggle ----------------------------------------------------------- */
+.theme{
+  position:fixed; top:14px; right:14px; z-index:20;
+  background:var(--surface); color:var(--ink-soft);
+  border:1px solid var(--rule); border-radius:2px; cursor:pointer;
+  font-family:var(--f-mono); font-size:10.5px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; padding:7px 11px;
+}
+.theme:hover{color:var(--accent); border-color:var(--accent)}
+
+@media (max-width:640px){
+  .canopy,.roots{grid-template-columns:1fr}
+  .formula .lbl{flex:1 1 100%; border-right:none; border-bottom:1px solid var(--rule-soft)}
+  ol.chain li{padding-left:34px}
+  .landing{margin-left:0}
+}
+@media print{
+  .theme{display:none}
+  body{background:#fff}
+  header.poster{background:#fff;color:#15181c;border-bottom:3px solid #15181c}
+  .trunk{background:#fff;color:#15181c;border:2px solid #15181c}
+  section{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<button class="theme" id="t">Tema</button>
+
+<header class="poster">
+  <div class="wrap">
+    <p class="kicker">Programa Emprendedor · Proyecto Integrador VI · Univalle Santa Cruz</p>
+    <h1>Árbol de<br>problemas <em>&amp;</em><br>5 porqués</h1>
+    <p class="dek">Universo Monetario — qué opciones tiene un boliviano, persona o empresa, para defender su dinero de la inflación y del tipo de cambio: cuánto cuesta entrar a cada una, cuánto rindió en términos reales, qué tan líquida es y qué respaldo documental deja.</p>
+    <div class="stamp">
+      <span><b>Equipo</b> · Sabrina Adrián · Fiorella Sandoval · Samuel Castillo · Carlos Méndez · Jhennifer Sivila</span>
+      <span><b>Fecha</b> · 15 de septiembre de 2026</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- EL ÁRBOL: copa -> tronco -> raíces -->
+  <section class="wrap" id="efectos">
+    <div class="sec-head">
+      <span class="sec-n">01 · Copa del árbol</span>
+      <h2>Efectos</h2>
+      <p class="sec-sub">Qué provoca este problema y qué consecuencias genera.</p>
+    </div>
+    <div class="canopy">
+      <div class="node">
+        <span class="tag">E1 · Pérdida de valor</span>
+        <p>La canasta de quince productos básicos pasó de <strong>Bs 189 en 2021 a Bs 301 en 2026</strong>: <strong>45 %</strong> de inflación acumulada entre 2020 y 2026. Bs 1.000 compraban cinco canastas y hoy cubren poco más de tres. Quien se quedó en efectivo perdió sin saber cuánto.</p>
+      </div>
+      <div class="node">
+        <span class="tag">E2 · Canal sin respaldo</span>
+        <p>El volumen operado con activos virtuales pasó de <strong>USD 46,5 millones</strong> (I-2024) a <strong>USD 294 millones</strong> (I-2025): un alza del <strong>630 %</strong> con unas 252.800 personas. El <strong>73 % es USDT</strong> y menos del 1 % bitcóin: es cobertura, no especulación.</p>
+        <p>Pero sobre Bs 50.000, sin documento de pago válido, se pierde el crédito fiscal IVA (RND 102400000021, artículo 5).</p>
+      </div>
+      <div class="node">
+        <span class="tag">E3 · Exposición al fraude</span>
+        <p><strong>Doce alertas públicas de ASFI</strong> sobre <strong>siete plataformas</strong> que ofertaban inversión o captaban dinero a cambio de rendimientos. Dos se hacían pasar por la Gaceta Oficial en Facebook y una usó el logotipo de ASFI contra sus propios inversores.</p>
+        <p>Sin una vara de comparación, cualquier promesa de rendimiento parece plausible.</p>
+      </div>
+      <div class="node">
+        <span class="tag">E4 · El canal formal es mayorista</span>
+        <p><strong>2.157 clientes</strong> en las diez agencias de bolsa autorizadas de todo el país al 30 de abril de 2026, con un ticket promedio de <strong>Bs 16,5 millones</strong>. Contra eso, <strong>7.955.358 billeteras móviles</strong> emitidas: son <strong>3.688 billeteras por cada persona</strong> con cuenta en una agencia de bolsa.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="stem" aria-hidden="true"></div>
+
+  <section class="wrap" id="problema" style="margin-top:0">
+    <div class="sec-head">
+      <span class="sec-n">02 · Tronco</span>
+      <h2>El problema actual</h2>
+      <p class="sec-sub">Qué está pasando, a quién le pasa y en qué contexto ocurre.</p>
+    </div>
+    <div class="trunk">
+      <span class="tag">Problema actual</span>
+      <p>En Bolivia, quien quiere proteger su dinero de la inflación y del tipo de cambio decide a ciegas: no existe ningún lugar donde las opciones disponibles —efectivo, dólar paralelo, caja de ahorro y DPF, fondos SAFI, bolsa y USDT— se comparen con el mismo criterio de costo de entrada, rendimiento real, liquidez y respaldo documental.</p>
+    </div>
+  </section>
+
+  <div class="stem" aria-hidden="true"></div>
+
+  <section class="wrap" id="causas" style="margin-top:0">
+    <div class="sec-head">
+      <span class="sec-n">03 · Raíces</span>
+      <h2>Causas</h2>
+      <p class="sec-sub">Por qué ocurre. Qué barreras, procesos, comportamientos o condiciones lo generan.</p>
+    </div>
+    <div class="roots">
+      <div class="node">
+        <span class="tag">C1 · Nadie publica riesgo comparable</span>
+        <p>De <strong>once productos financieros de la región</strong> revisados, <strong>ninguno muestra desviación estándar</strong>. Fintual usa nombres de celebridades para sus niveles de riesgo, tyba arranca por la meta del usuario, Takenos lo traduce a quién custodia los fondos. Todos sustituyen el riesgo por otra cosa; ninguno lo cuantifica de forma comparable entre alternativas.</p>
+        <span class="chip chip-ev">Tenemos evidencia</span>
+      </div>
+      <div class="node">
+        <span class="tag">C2 · Cada proveedor muestra su porción</span>
+        <p>Banco, SAFI, agencia de bolsa y billetera enseñan sólo su vertical, porque es lo que monetizan. Takenos y Belo entraron a Bolivia en 2026 y resolvieron el acceso: abrir cuenta y poner un dólar. Ninguno consolida.</p>
+        <p><strong>El hueco es de consolidación, no de entrada.</strong></p>
+        <span class="chip chip-ev">Tenemos evidencia</span>
+      </div>
+      <div class="node">
+        <span class="tag">C3 · El costo de entrada no está escrito</span>
+        <p>Ni la Bolsa Boliviana de Valores ni ninguna agencia publica monto mínimo de apertura. Lo que sí está publicado es el tarifario: una tarifa mínima de <strong>USD 50 por operación</strong> de renta fija hace que invertir USD 500 cueste <strong>10 % sólo en entrar</strong>.</p>
+        <p>El mínimo formal no existe; el mínimo económico está, es medible y ronda los USD 5.000.</p>
+        <span class="chip chip-ev">Tenemos evidencia</span>
+      </div>
+      <div class="node">
+        <span class="tag">C4 · Baja alfabetización financiera</span>
+        <p><strong>24 % de adultos financieramente alfabetizados</strong> contra 33 % del promedio mundial, y sólo <strong>6,3 %</strong> declara haber ahorrado para la vejez.</p>
+        <p>La medición del 24 % es <strong>de 2014</strong> y va siempre con su fecha; el 6,3 % es de 2024. Hay que verificarla con fuente accesible antes de sostenerla ante el tribunal.</p>
+        <span class="chip chip-hy">Es hipótesis que debemos investigar</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 PORQUÉS -->
+  <section class="wrap" id="porques">
+    <div class="sec-head">
+      <span class="sec-n">04 · Profundiza</span>
+      <h2>Los cinco porqués</h2>
+      <p class="sec-sub">Dos causas llevadas hasta algo concreto que podamos investigar.</p>
+    </div>
+
+    <div class="why" style="margin-bottom:46px">
+      <p class="why-head">Causa seleccionada 1</p>
+      <h3>Nadie publica rendimiento real ni riesgo comparable</h3>
+      <ol class="chain">
+        <li><p><b>¿Por qué ocurre?</b> Cada proveedor publica el rendimiento nominal de su propio producto y nunca lo contrasta contra el índice de precios al consumidor.</p></li>
+        <li><p><b>¿Por qué ocurre eso?</b> Porque restar la inflación muestra que varios productos rindieron negativo en términos reales: 2025 cerró con <span class="fig">20,40 %</span> de inflación y ninguna tasa pasiva de DPF se le acercó.</p></li>
+        <li><p><b>¿Por qué ocurre eso?</b> Porque cada proveedor compite por captar, no por informar. Su métrica de éxito es el saldo captado, no el acierto de la decisión del cliente.</p></li>
+        <li><p><b>¿Por qué ocurre eso?</b> Porque no hay un tercero neutral que compare: la Ley 1834 del Mercado de Valores reserva la asesoría financiera a las agencias de bolsa, y en Bolivia <b>no existe la figura del asesor de inversión independiente</b>.</p></li>
+        <li><p><b>¿Por qué ocurre eso?</b> Porque esa norma se diseñó para un mercado de valores mayorista —2.157 clientes en todo el país— y nunca contempló al ahorrista minorista, que hoy decide solo.</p></li>
+      </ol>
+      <p class="landing"><b>Dónde aterriza:</b> el vacío es legal y estructural, no de mala voluntad. Y define nuestro alcance: informar y advertir está permitido —analizar y mostrar información no figura entre las cinco actividades que exigen licencia de ASFI (DS 5384)—; orientar la decisión concreta sobre un activo, no.</p>
+    </div>
+
+    <div class="why">
+      <p class="why-head">Causa seleccionada 2</p>
+      <h3>Los datos existen, pero nadie los junta</h3>
+      <ol class="chain">
+        <li><p><b>¿Por qué ocurre?</b> Cada fuente publica por separado y en su propio formato: el IPC en el INE, las tasas pasivas en XLSX del BCB, los fondos en una aplicación ASP.NET de ASFI, la bolsa sólo dentro de 135 boletines mensuales en PDF, y el mercado entre pares únicamente en vivo, en el libro de Binance.</p></li>
+        <li><p><b>¿Por qué ocurre eso?</b> Porque cada organismo publica para cumplir su mandato de transparencia, no para que alguien compare entre organismos.</p></li>
+        <li><p><b>¿Por qué ocurre eso?</b> Porque ninguno tiene al ahorrista como destinatario: ASFI supervisa entidades, el BCB gestiona política monetaria y el INE mide precios.</p></li>
+        <li><p><b>¿Por qué ocurre eso?</b> Porque el acceso abierto no es un objetivo del sistema: la BBV vende los históricos detallados por suscripción y bloquea por IP ante consultas concurrentes.</p></li>
+        <li><p><b>¿Por qué ocurre eso?</b> Porque consolidar es trabajo de ingeniería de datos y hoy no es negocio de nadie.</p></li>
+      </ol>
+      <p class="landing"><b>Dónde aterriza:</b> en algo que sí podemos hacer nosotros y que ya empezamos. Las seis fuentes están descargadas y abiertas, y la sexta la levantamos por cuenta propia.</p>
+    </div>
+  </section>
+
+  <!-- FIRMA: la tabla rompe la medida -->
+  <section class="signature bleed" id="entrada">
+    <div class="wrap" style="padding-inline:0; margin-inline:auto">
+      <div class="sec-head">
+        <span class="sec-n">05 · Punto de entrada</span>
+        <h2>¿Dónde podemos entrar?</h2>
+        <p class="sec-sub">Dos posibles puntos de intervención, comparados con el mismo criterio.</p>
+      </div>
+    </div>
+    <p class="tcap">Columna A recomendada · criterios de la plantilla del Programa Emprendedor</p>
+    <div class="tscroll">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th scope="col">Criterio</th>
+            <th scope="col" class="reco">Opción A — Comparador de opciones de protección</th>
+            <th scope="col">Opción B — Indicador de respaldo documental ante el fisco</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">¿Afecta claramente a una persona o actor?</th>
+            <td class="col-a"><span class="yes">Sí.</span> El ahorrista boliviano o la pequeña empresa que tiene que decidir dónde poner su dinero.</td>
+            <td><span class="yes">Sí.</span> El importador que paga a su proveedor en dólares digitales y pierde el crédito fiscal.</td>
+          </tr>
+          <tr>
+            <th scope="row">¿Podemos conseguir información o datos sobre esto?</th>
+            <td class="col-a"><span class="yes">Sí, y ya están descargados:</span> IPC empalmado del INE · <b class="num">75.804</b> observaciones de dólar paralelo (jul-2024 a sep-2026, sin días faltantes) · <b class="num">302</b> de 308 meses de tasas pasivas del BCB · <b class="num">382.424</b> filas diarias de 100 fondos SAFI · <b class="num">135</b> boletines de ASFI · captura propia horaria del libro de Binance desde el 9 de septiembre.</td>
+            <td><span class="no">Parcial.</span> La Aduana Nacional publica el agregado de importaciones por partida, origen y valor, pero el microdato de quién pagó con qué medio no existe de forma pública.</td>
+          </tr>
+          <tr>
+            <th scope="row">¿Podemos hablar con personas que viven este problema?</th>
+            <td class="col-a"><span class="yes">Sí.</span> Compañeros de carrera, familias y clientes de un taller mecánico: el universo está al alcance.</td>
+            <td><span class="yes">Sí, pero acotado</span> a importadores. Hay un conjunto de compras real de una empresa de Santa Cruz disponible para prototipar.</td>
+          </tr>
+          <tr>
+            <th scope="row">¿Podemos crear una solución emprendedora para resolver esto en el Programa Emprendedor?</th>
+            <td class="col-a"><span class="yes">Sí.</span> Una capa de consolidación y comparación. Es legal sin licencia: analizar y mostrar información no está entre las cinco actividades que exigen autorización de ASFI (DS 5384 del 7 de mayo de 2025).</td>
+            <td><span class="no">Sí, pero</span> el producto resultante es consultoría jurídico-contable, no un producto de datos.</td>
+          </tr>
+          <tr>
+            <th scope="row">¿Podríamos experimentar o prototipar algo alrededor de él?</th>
+            <td class="col-a"><span class="yes">Sí.</span> Dos columnas con profundidad —el mercado entre pares, que tiene dato propio horario, y la formal con mejor fuente— y las otras cuatro descriptivas.</td>
+            <td><span class="no">No</span> en catorce semanas sin microdatos de operaciones.</td>
+          </tr>
+          <tr>
+            <th scope="row">¿Es suficientemente concreto para trabajar este semestre?</th>
+            <td class="col-a"><span class="yes">Sí,</span> con el riesgo declarado por escrito: seis columnas a medias es peor que dos bien hechas.</td>
+            <td><span class="no">No como eje.</span> Sí como una de las cuatro dimensiones del cuadro.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="wrap" style="padding-inline:0; margin-top:20px">
+      <p class="landing" style="margin-left:0"><b>Decisión:</b> la opción A, con la B adentro como cuarta dimensión. Conserva toda la evidencia acumulada y convierte el trabajo normativo ya hecho —la RND, las alertas de ASFI, el alcance legal— en una columna del análisis en vez de tirarlo.</p>
+    </div>
+  </section>
+
+  <!-- PROBLEMA QUE DECIDIMOS TRABAJAR -->
+  <section class="wrap" id="enunciado">
+    <div class="sec-head">
+      <span class="sec-n">06 · Enunciado</span>
+      <h2>El problema que decidimos trabajar</h2>
+      <p class="sec-sub">Redactado con la estructura que pide la plantilla.</p>
+    </div>
+    <div class="formula">
+      <div class="row">
+        <div class="lbl">Persona / actor</div>
+        <div class="val">Un ahorrista boliviano —persona o pequeña empresa— sin formación financiera</div>
+      </div>
+      <div class="row">
+        <div class="lbl">enfrenta</div>
+        <div class="val">no poder comparar con un mismo criterio las opciones donde poner su dinero: efectivo, dólar paralelo, caja de ahorro y DPF, fondos SAFI, bolsa y USDT</div>
+      </div>
+      <div class="row">
+        <div class="lbl">cuando / en</div>
+        <div class="val">un contexto de pérdida acumulada de poder adquisitivo —45 % entre 2020 y 2026— y de quiebre del régimen cambiario del 29 de junio de 2026</div>
+      </div>
+      <div class="row">
+        <div class="lbl">lo que genera</div>
+        <div class="val">decisiones tomadas por costumbre o consejo informal, pérdida de valor que no puede cuantificar, y exposición tanto al fraude como a operaciones sin respaldo ante la administración tributaria</div>
+      </div>
+    </div>
+    <p class="verdict"><b>Sí.</b> Es realmente el problema que queremos investigar y sobre el que tenemos capacidad de actuar: las seis fuentes de datos ya están descargadas, abiertas y documentadas.</p>
+  </section>
+
+  <!-- ADVERTENCIAS -->
+  <section class="wrap" id="advertencias">
+    <div class="sec-head">
+      <span class="sec-n">07 · Blindaje</span>
+      <h2>Tres cosas que no pueden entrar mal</h2>
+      <p class="sec-sub">Cada una es una pregunta que el tribunal levanta primero, y las tres se evitan gratis.</p>
+    </div>
+    <div class="warn">
+      <h3>No escribir «la inflación es alta» en presente</h3>
+      <p>Al 5 de septiembre de 2026 la inflación acumulada del año va en <strong>3 %</strong>, contra 18 % en el mismo tramo de 2025. Un argumento construido sobre la inflación en curso se cae con ese dato. El que aguanta es la <strong>pérdida acumulada</strong> de poder adquisitivo, que es como está redactado el árbol.</p>
+    </div>
+    <div class="warn">
+      <h3>No decir que la compra «se presume inexistente para el fisco»</h3>
+      <p>La RND N° 102400000021 no dice eso. Dice que sin documento de pago válido hay consecuencias tributarias, y la principal es la <strong>pérdida del crédito fiscal IVA</strong> para el comprador. Citar una versión más fuerte que la norma es la primera grieta que se abre en la defensa.</p>
+    </div>
+    <div class="warn">
+      <h3>El 24 % de alfabetización financiera es una medición de 2014</h3>
+      <p>Va siempre con su fecha, apuntalado con el <strong>6,3 %</strong> que ahorró para la vejez, que sí es de 2024. Y no se citan puntajes de alfabetización financiera de CAF sin verificarlos contra la fuente original.</p>
+    </div>
+  </section>
+
+  <footer class="wrap">
+    Árbol de problemas y 5 porqués · Universo Monetario<br>
+    Programa Emprendedor · Proyecto Integrador VI semestre<br>
+    Ingeniería en Ciencia de Datos e Inteligencia de Negocios · Universidad Privada del Valle, Santa Cruz<br>
+    15 de septiembre de 2026
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  var b=document.getElementById('t'),r=document.documentElement;
+  b.addEventListener('click',function(){
+    var cur=r.getAttribute('data-theme');
+    if(!cur){
+      var dark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+      r.setAttribute('data-theme',dark?'light':'dark');
+    }else{
+      r.setAttribute('data-theme',cur==='dark'?'light':'dark');
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -24,6 +24,11 @@ Intelligence II, materia en la que el proyecto se desarrolla.
 | `fuentes.json` | Catálogo de fuentes con lo que aporta cada una y su estado de verificación. |
 | `scripts/verificar_fuentes.py` | Comprueba que las fuentes declaradas siguen en pie, con control negativo. |
 | `docs_ini/` | Investigación inicial asistida por agente de IA: evidencia del problema, marco normativo y catálogo de fuentes de datos. |
+| `docs/mapa-impacto.md` | Mapa de impacto en texto: objetivo, cuatro actores, dieciséis impactos y treinta y dos entregables con sus puntos de historia y su estado. |
+| `docs/mapa-impacto.pdf` | El mismo mapa como diagrama, en una hoja para imprimir o proyectar. |
+| `docs/mapa-impacto.html` | La versión navegable del diagrama, con filtros por rama. |
+| `docs/mapa_datos.py` | Fuente única de los datos del mapa. El `.md`, el `.html` y el PDF salen de acá. |
+| `docs/arbol-problemas-universo-monetario.html` | Árbol de problemas: causas, problema central y efectos. |
 
 ## Comprobalo vos
 
