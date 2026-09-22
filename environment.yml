@@ -1,0 +1,7 @@
+name: universo-monetario
+channels:
+  - defaults
+dependencies:
+  - python=3.12.13
+  - pandas=3.0.5
+  - notebook=7.5.7

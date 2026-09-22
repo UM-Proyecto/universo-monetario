@@ -12,9 +12,9 @@ contenido. Por eso el campo `estado` de fuentes.json se llena a mano, cuando
 alguien baja el archivo y lo abre, y este script nunca lo modifica.
 
 Uso:
-    python3 scripts/verificar_fuentes.py
-    python3 scripts/verificar_fuentes.py --json      # salida para otro programa
-    python3 scripts/verificar_fuentes.py --timeout 30
+    python3 src/verificar_fuentes.py
+    python3 src/verificar_fuentes.py --json      # salida para otro programa
+    python3 src/verificar_fuentes.py --timeout 30
 
 Sale con código 1 si alguna fuente declarada no responde, para que sirva en un
 cron o en integración continua.

@@ -186,7 +186,7 @@ de libertad. Lo que sí aguanta es un test de Chow con la fecha de quiebre conoc
 evento alrededor del 29 de junio de 2026.
 
 **No se construyen matrices de contabilidad social ni modelos de equilibrio general.** El
-relevamiento de herramientas está en `docs_ini/02-fuentes-de-datos.md` y su conclusión es que ese
+relevamiento de herramientas está en `docs/investigacion-inicial/02-fuentes-de-datos.md` y su conclusión es que ese
 camino cuesta un trabajo de tesis de maestría, no un semestre.
 
 ---

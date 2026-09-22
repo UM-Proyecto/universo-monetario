@@ -26,7 +26,7 @@ Las fuentes del proyecto están declaradas en `fuentes.json`, con lo que aporta 
 qué estado de verificación está. Para comprobarlas:
 
 ```bash
-python3 scripts/verificar_fuentes.py
+python3 src/verificar_fuentes.py
 ```
 
 Salida de la corrida del 10 de septiembre de 2026:
@@ -90,7 +90,7 @@ sin permisos especiales, porque el repositorio es público:
 gh api repos/UM-Proyecto/universo-monetario/contents \
     --jq '.[] | "\(.type)\t\(.size)\t\(.name)"'
 
-gh api repos/UM-Proyecto/universo-monetario/contents/docs_ini \
+gh api repos/UM-Proyecto/universo-monetario/contents/docs/investigacion-inicial \
     --jq '.[] | "\(.size)\t\(.name)"'
 ```
 
@@ -101,7 +101,7 @@ con lo que devuelven esos comandos, el que está equivocado es este archivo.
 
 ## Cómo se produjo la investigación inicial
 
-Los tres documentos de `docs_ini/` los redactó un agente de inteligencia artificial
+Los tres documentos de `docs/investigacion-inicial/` los redactó un agente de inteligencia artificial
 a partir de la base de conocimiento del equipo, y cada uno lo declara en su
 encabezado con la fecha.
 
@@ -115,7 +115,7 @@ contrastarlo**, y el propio material explica por qué.
 
 Una ronda de verificación cerrada el 28 de agosto de 2026 obligó a corregir doce afirmaciones del
 material del equipo. Cuatro cambiaban el sentido de lo que el documento decía. La lista completa
-está al final de `docs_ini/00-investigacion-inicial.md`, y quien reutilice cualquier cifra de este
+está al final de `docs/investigacion-inicial/00-investigacion-inicial.md`, y quien reutilice cualquier cifra de este
 repositorio debería leerla antes.
 
 Los dos modos de falla que más conviene tener presentes:

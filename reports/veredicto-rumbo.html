@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Veredicto sobre el rumbo — Universo Monetario</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#16191d;
+  --tinta-2:#3f464f;
+  --tinta-3:#6b7480;
+  --linea:#d9dde3;
+  --linea-suave:#e9ecf0;
+  --papel:#ffffff;
+  --acento:#0f4c81;
+  --acento-claro:#eef3f8;
+  --alerta:#8a2d17;
+  --alerta-claro:#fbf0ec;
+  --ok:#1f5c3d;
+  --ok-claro:#eef5f1;
+  --neutro-claro:#f5f6f8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#6d7480}
+body{
+  font-family:'Source Serif 4', Georgia, 'Times New Roman', serif;
+  color:var(--tinta);
+  font-size:9.6pt;
+  line-height:1.44;
+}
+.page{
+  width:210mm;
+  min-height:297mm;
+  padding:16mm 18mm 14mm 18mm;
+  margin:0 auto 8mm auto;
+  background:var(--papel);
+  position:relative;
+}
+@media print{
+  html,body{background:#fff}
+  .page{margin:0;box-shadow:none;page-break-after:always}
+  .page:last-child{page-break-after:auto}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+}
+@page{size:A4;margin:0}
+
+/* --- tipografía --- */
+h1{
+  font-family:'Source Serif 4',Georgia,serif;
+  font-size:23pt;line-height:1.12;font-weight:700;
+  margin:0 0 3.5mm 0;letter-spacing:-.015em;
+}
+h2{
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.14em;
+  color:var(--acento);
+  margin:6.5mm 0 2.4mm 0;padding-bottom:1.4mm;border-bottom:1.2px solid var(--acento);
+}
+h3{
+  font-family:'Source Serif 4',Georgia,serif;
+  font-size:11.2pt;font-weight:700;margin:4.2mm 0 1.6mm 0;line-height:1.28;
+}
+h4{
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:8.6pt;font-weight:700;margin:3.4mm 0 1.2mm 0;color:var(--tinta);
+}
+p{margin:0 0 2.1mm 0;text-align:justify;hyphens:auto}
+strong{font-weight:700}
+em{font-style:italic}
+ul,ol{margin:0 0 2.6mm 0;padding-left:5mm}
+li{margin-bottom:1.3mm;text-align:justify}
+a{color:var(--acento);text-decoration:none;border-bottom:.6px solid rgba(15,76,129,.35)}
+
+/* --- cabecera --- */
+.cintillo{
+  font-family:'Inter',sans-serif;font-size:7.4pt;font-weight:600;
+  text-transform:uppercase;letter-spacing:.18em;color:var(--tinta-3);
+  display:flex;justify-content:space-between;
+  padding-bottom:2.5mm;margin-bottom:7mm;border-bottom:2.4px solid var(--tinta);
+}
+.bajada{
+  font-size:11.4pt;line-height:1.4;color:var(--tinta-2);
+  margin:0 0 4.5mm 0;text-align:left;
+}
+.meta{
+  font-family:'Inter',sans-serif;font-size:7.8pt;line-height:1.6;color:var(--tinta-3);
+  border-top:.8px solid var(--linea);padding-top:2.2mm;margin-bottom:5mm;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:4mm;
+}
+.meta b{display:block;color:var(--tinta);font-weight:600;font-size:7.4pt;
+  text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6mm}
+
+/* --- bloques --- */
+.veredicto{
+  background:var(--tinta);color:#fff;padding:5.5mm 6mm;margin:0 0 4.5mm 0;
+}
+.veredicto .rot{
+  font-family:'Inter',sans-serif;font-size:7.4pt;font-weight:700;
+  text-transform:uppercase;letter-spacing:.2em;color:#9fb4c9;margin-bottom:2.5mm;
+}
+.veredicto p{font-size:11.6pt;line-height:1.38;margin:0 0 2.2mm 0;color:#fff;text-align:left}
+.veredicto p:last-child{margin-bottom:0}
+.veredicto .sub{font-size:9pt;line-height:1.45;color:#c8d4e0}
+
+.caja{
+  border:.9px solid var(--linea);padding:3.4mm 4mm;margin:0 0 3.2mm 0;background:var(--neutro-claro);
+}
+.caja.acento{background:var(--acento-claro);border-color:#b9cde0}
+.caja.alerta{background:var(--alerta-claro);border-color:#e3c3b8}
+.caja.ok{background:var(--ok-claro);border-color:#bdd6c8}
+.caja h4{margin-top:0}
+.caja p:last-child,.caja ul:last-child{margin-bottom:0}
+
+.etq{
+  font-family:'Inter',sans-serif;font-size:6.6pt;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;
+  padding:.5mm 1.4mm;border-radius:1.5px;vertical-align:.12em;white-space:nowrap;
+}
+.e-ev{background:#dce9f4;color:#0f4c81}
+.e-in{background:#f2e6d2;color:#7a5410}
+.e-hi{background:#eee1ef;color:#6b2d72}
+.e-pv{background:#e6e8eb;color:#4a525c}
+
+table{width:100%;border-collapse:collapse;margin:0 0 3.2mm 0;font-size:8.1pt}
+th{
+  font-family:'Inter',sans-serif;font-size:6.9pt;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;text-align:left;
+  padding:2mm 2.2mm;border-bottom:1.4px solid var(--tinta);color:var(--tinta);
+  vertical-align:bottom;
+}
+td{padding:1.6mm 2mm;border-bottom:.7px solid var(--linea-suave);vertical-align:top;line-height:1.4}
+tr:last-child td{border-bottom:.9px solid var(--linea)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.gana{background:var(--ok-claro)}
+
+.captura{
+  border-left:2.4px solid var(--acento);padding:0 0 0 4mm;margin:0 0 4mm 0;
+}
+.captura .id{
+  font-family:'Inter',sans-serif;font-size:7.2pt;font-weight:700;color:var(--acento);
+  text-transform:uppercase;letter-spacing:.12em;margin-bottom:1mm;
+}
+.captura .arch{
+  font-family:'Inter',sans-serif;font-size:7pt;color:var(--tinta-3);
+  margin-bottom:2mm;word-break:break-all;
+}
+.captura h3{margin-top:0}
+
+.paso{display:flex;gap:3.5mm;margin-bottom:2.8mm;align-items:baseline}
+.paso .n{
+  font-family:'Inter',sans-serif;font-size:15pt;font-weight:700;color:var(--linea);
+  line-height:1;min-width:8mm;
+}
+.paso .t{flex:1}
+.paso .t b{font-family:'Inter',sans-serif;font-size:9.2pt;display:block;margin-bottom:.8mm}
+.paso .t p{margin-bottom:0;font-size:9pt}
+
+.pie{
+  position:absolute;bottom:7mm;left:18mm;right:18mm;
+  font-family:'Inter',sans-serif;font-size:6.8pt;color:var(--tinta-3);
+  border-top:.7px solid var(--linea);padding-top:1.8mm;
+  display:flex;justify-content:space-between;
+}
+.nota{font-size:8pt;color:var(--tinta-2);line-height:1.45}
+.dl{margin:0 0 3mm 0}
+.dl dt{font-family:'Inter',sans-serif;font-size:8.2pt;font-weight:700;margin-top:2mm}
+.dl dd{margin:.5mm 0 0 0;font-size:9pt;line-height:1.42;text-align:justify}
+</style>
+</head>
+<body>
+
+<!-- ============ PÁGINA 1 ============ -->
+<div class="page">
+  <div class="cintillo">
+    <span>Universo Monetario · Proyecto Integrador</span>
+    <span>22 de septiembre de 2026</span>
+  </div>
+
+  <h1>Veredicto sobre el rumbo<br>del Proyecto Integrador</h1>
+  <p class="bajada">Qué eje conviene sostener, qué hay que corregirle antes de seguir, y qué dicen
+  las cinco capturas del tablero de trabajo leídas contra la investigación de validación.</p>
+
+  <div class="meta">
+    <div><b>Sobre qué se decide</b>El eje del Proyecto Integrador de sexto semestre, del que cuelgan los entregables de cinco materias.</div>
+    <div><b>Evidencia de base</b>Informe de validación de tres ideas, 2.621 líneas, 16 y 17 de septiembre de 2026.</div>
+    <div><b>Evidencia nueva</b>Cinco capturas del tablero colaborativo del equipo, tomadas hoy entre las 15:08 y las 15:25.</div>
+  </div>
+
+  <div class="veredicto">
+    <div class="rot">El veredicto, en una frase</div>
+    <p>El rumbo es el importador de repuestos, pero el enunciado que el equipo acaba de aprobar
+    apunta a la variable equivocada: desde julio de 2026 lo que mueve su costo es el tipo de
+    cambio, no el precio del repuesto.</p>
+    <p class="sub">La decisión de trabajar ese eje es defendible y hoy tiene más respaldo que hace
+    cinco días. Lo que no se sostiene es la causa que el árbol de problemas le atribuye. Corregir
+    esa frase cuesta una reunión y salva el semestre de construir un tablero que contesta una
+    pregunta menor.</p>
+  </div>
+
+  <h2>Cómo se llegó acá</h2>
+
+  <p>El 16 y 17 de septiembre se encargó una investigación de validación que comparó tres ideas de
+  negocio con el mismo esfuerzo: importadores cruceños y acceso a dólares, bolivianos que buscan
+  proteger el valor de su dinero, e importadores de repuestos automotrices y momento de compra.
+  El informe resultante tiene 2.621 líneas, etiqueta afirmación por afirmación según sea evidencia,
+  indicio, hipótesis o cosa por validar, y pasó por una verificación independiente que le encontró
+  cuatro errores reales y se los corrigió en el cuerpo.</p>
+
+  <p>Su conclusión fue que la idea del ahorrista tenía la base documental más clara, y cerró con una
+  advertencia explícita: la idea de los repuestos era la que menos base traía, la que más ganó
+  durante la investigación y la que tiene el cliente más accesible, de modo que <em>dos días de
+  entrevistas en el circuito de repuestos de Santa Cruz podían dar vuelta el veredicto, y eso era
+  exactamente lo que el equipo debía hacer antes de decidir</em>.</p>
+
+  <p>Las capturas de hoy muestran que el equipo hizo eso. Hay al menos una entrevista levantada con
+  su mapa de empatía completo, un árbol de problemas con sus cinco porqués, un lienzo de propuesta
+  de valor y, al pie del árbol, el problema a trabajar redactado y marcado como aceptado. Eso es
+  material nuevo que la investigación no tenía, y mueve el veredicto. Este documento lo recalcula.</p>
+
+
+  <div class="pie"><span>Veredicto sobre el rumbo · Universo Monetario</span><span>1 / 10</span></div>
+</div>
+
+<div class="page">
+  <div class="cintillo">
+    <span>Los tres enunciados</span>
+    <span>22 de septiembre de 2026</span>
+  </div>
+
+  <h2>Los tres enunciados que estaban vivos al mismo tiempo</h2>
+
+  <p>El obstáculo que la investigación puso por encima de todos los demás no era cuál idea
+  elegir, sino que había tres enunciados circulando a la vez y ninguno ratificado. Entrevistar
+  clientes sin resolver eso produce entrevistas que no se pueden comparar entre sí.</p>
+
+  <table>
+    <thead><tr><th style="width:26%">Enunciado</th><th style="width:30%">Dónde vive</th><th>Qué le pasó</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Crédito fiscal</b><br>del importador que paga en dólares digitales</td>
+        <td><code>PROYECTO.md</code> del repositorio, y la ficha amarilla del lienzo</td>
+        <td>Conserva el mejor activo normativo del proyecto y perdió la mitad de su vigencia.
+        Hay además un hecho que lo bloquea en presente, en la página siguiente.</td>
+      </tr>
+      <tr>
+        <td><b>Seis columnas</b><br>para defender el valor del dinero</td>
+        <td>Decisión del 11 de septiembre en el tablero; objetivo del mapa de impacto</td>
+        <td>Tiene la mejor evidencia documental de las tres y el punto más débil que ninguna
+        investigación documental puede cubrir: cero entrevistas.</td>
+      </tr>
+      <tr class="gana">
+        <td><b>Momento de compra</b><br>del importador de repuestos</td>
+        <td>Árbol de problemas y lienzo de propuesta de valor, trabajados hoy</td>
+        <td><b>Es el que el equipo acaba de aceptar por escrito</b>, y ahora tiene entrevista,
+        serie sectorial propia y acceso directo al cliente.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="nota">Una aclaración que evita una discusión inútil: el eje de los repuestos ya había
+  aparecido dos veces en la bitácora del proyecto, pero las dos como otra cosa. El 9 de septiembre
+  como un tanteo descartado, y el 15 de septiembre como un problema de <em>precios de venta</em> —a
+  cuánto vender lo que ya se compró—, que es el extremo opuesto del proceso. El árbol de problemas
+  de hoy dice <em>abastecimiento</em>: cuándo y cuánto comprar. Son problemas distintos, con
+  clientes distintos y datos distintos. La contradicción que la investigación dejó abierta se
+  resolvió hoy, a favor del abastecimiento, y conviene dejarlo asentado antes de que vuelva.</p>
+
+  <div class="pie"><span>Veredicto sobre el rumbo · Universo Monetario</span><span>2 / 10</span></div>
+</div>
+
+<!-- ============ PÁGINA 2 ============ -->
+<div class="page">
+  <div class="cintillo">
+    <span>La corrección que el rumbo necesita</span>
+    <span>22 de septiembre de 2026</span>
+  </div>
+
+  <h2>El problema del enunciado aprobado hoy</h2>
+
+  <p>El árbol de problemas cierra con esta frase, marcada como el problema que el equipo decide
+  trabajar: <em>los importadores de repuestos automotrices tienen dificultades para identificar el
+  momento adecuado para realizar sus compras debido a la falta de información suficiente sobre la
+  evolución y fluctuación de los precios</em>. La primera mitad —la dificultad para elegir el
+  momento— resiste. La segunda mitad —que la causa es la falta de información sobre precios— es
+  donde la evidencia va en contra.</p>
+
+  <div class="caja alerta">
+    <h4>La medición que lo contradice <span class="etq e-ev">Evidencia</span></h4>
+    <p>La base de importaciones del Instituto Nacional de Estadística trae el valor de cada registro
+    en dólares y en bolivianos. Su cociente es el tipo de cambio que la aduana aplicó. Para la
+    canasta de repuestos ese cociente da <b>exactamente 6,96 en cada uno de los cuarenta y dos meses
+    de enero de 2023 a junio de 2026</b>, y <b>9,25 en julio de 2026</b>.</p>
+    <p>En ese mismo mes de julio, mientras el tipo de cambio aplicado subía 32,8 %, el valor unitario
+    en dólares de la canasta <b>bajó 3,6 %</b>. El costo en bolivianos por kilo <b>subió 28,1 % en un
+    solo mes</b>. Las dos variables se movieron en direcciones opuestas y ganó la cambiaria.</p>
+    <p style="margin-bottom:0">Medido sobre los últimos doce meses disponibles, el desvío estándar de
+    la variación mensual es de 6,61 % para el precio en dólares y de <b>9,08 % para el tipo de
+    cambio</b>. Cálculo propio sobre 1.433.610 registros de 2023 a julio de 2026, descargados el 16
+    de septiembre de 2026.</p>
+  </div>
+
+  <p>Dicho sin rodeos: durante cuarenta y dos meses el tipo de cambio fue una constante y toda la
+  variación del costo vino del precio, así que el enunciado habría sido correcto. Desde julio de
+  2026 dejó de serlo. El enunciado apunta al componente menor de la variación justo en el mes en
+  que el otro componente se volvió dominante.</p>
+
+  <p>Hay una causa rival que la evidencia hace más plausible, y que además es falsable con cinco
+  entrevistas <span class="etq e-hi">Hipótesis</span>: el importador sabe perfectamente cómo se
+  mueven los precios de lo que compra todas las semanas, y lo que no puede anticipar es cuánto le
+  va a costar en bolivianos el día que pague.</p>
+
+
+  <div class="pie"><span>Veredicto sobre el rumbo · Universo Monetario</span><span>3 / 10</span></div>
+</div>
+
+<div class="page">
+  <div class="cintillo">
+    <span>La corrección que el rumbo necesita</span>
+    <span>22 de septiembre de 2026</span>
+  </div>
+
+  <div class="caja ok">
+    <h4>Y la entrevista de hoy apunta en esa dirección</h4>
+    <p style="margin-bottom:0">El mapa de empatía del entrevistado registra, entre lo que le cuesta,
+    <b>Bs 12.040 adicionales pagados en una sola compra por la variación cambiaria</b>, y entre sus
+    frases textuales: <em>«Puedo calcular el pedido hoy, pero si el dólar cambia antes del pago, todo
+    el presupuesto queda desactualizado»</em>. Ninguna de las cinco frases atribuye el problema a
+    desconocer el precio del repuesto. La quinta agrega una variable que el enunciado tampoco
+    contempla: <em>«no solamente importa el dólar, también importa cuánto tarda la mercadería en
+    llegar»</em>.</p>
+  </div>
+
+  <h3>Cómo quedaría el enunciado corregido</h3>
+
+  <p>Una redacción que conserva el actor, el contexto y el dolor que el equipo ya validó, y sustituye
+  la causa por la que la evidencia sostiene:</p>
+
+  <div class="caja acento">
+    <p style="margin-bottom:0"><b>Los encargados de compras de importadoras de repuestos automotrices
+    de Santa Cruz</b> enfrentan <b>dificultades para decidir cuándo y cuánto comprar</b> cuando
+    <b>el costo en bolivianos de un pedido se define recién el día del pago</b>, lo que genera
+    <b>compras que se encarecen entre la cotización y el desembolso, y capital inmovilizado en
+    repuestos de baja rotación</b>.</p>
+  </div>
+
+  <p>Ese cambio no invalida nada de lo hecho hoy. El actor es el mismo, el lienzo de propuesta de
+  valor sigue en pie casi entero, y las cuatro causas del árbol se mantienen: lo que cambia es cuál
+  de ellas queda arriba. La causa que hoy figura como dominante —información de precios dispersa—
+  pasa a ser una de las cuatro, y sube la que el propio árbol ya tenía anotada en su segunda rama
+  de cinco porqués, la de cruzar variables fluctuantes en tiempo real.</p>
+
+  <h2>El eje del crédito fiscal, y por qué conviene archivarlo con fecha</h2>
+
+  <p>La ficha amarilla del enunciado del importador y el crédito fiscal sigue presente en el mismo
+  lienzo donde está el árbol de repuestos. Conviene sacarla, pero dejando asentado por qué, porque
+  el motivo es un hallazgo y no una pérdida de interés.</p>
+
+  <div class="caja">
+    <p style="margin-bottom:0">La pregunta que sostenía ese eje era si el comprobante de un proveedor
+    de servicios de activos virtuales autorizado sirve para bancarizar una operación sobre
+    Bs 50.000. <b>Hoy no se puede contestar, y no por falta de trabajo: no existe ningún proveedor
+    autorizado en Bolivia.</b> La Autoridad de Supervisión del Sistema Financiero publica veinte
+    empresas de tecnología financiera en proceso de adecuación al 31 de agosto de 2026, y el listado
+    de entidades con licencia no contiene ninguna <span class="etq e-ev">Evidencia</span>. No hay a
+    quién pedirle el comprobante. La pregunta vuelve a estar viva el día que se otorgue la primera
+    licencia, y hasta entonces cualquier trabajo sobre ese eje es especulación.</p>
+  </div>
+
+  <p class="nota">El activo que ese eje deja al proyecto no se tira: es el marco normativo leído
+  documento por documento, que sigue siendo la mejor pieza de investigación que el equipo produjo.
+  Cabe entero como dimensión de respaldo documental dentro del eje elegido, porque un importador
+  que paga al exterior necesita saber qué comprobante le queda, lo compre cuando lo compre.</p>
+
+  <div class="pie"><span>Veredicto sobre el rumbo · Universo Monetario</span><span>4 / 10</span></div>
+</div>
+
+<!-- ============ PÁGINA 3 ============ -->
+<div class="page">
+  <div class="cintillo">
+    <span>Las cinco capturas, anotadas</span>
+    <span>22 de septiembre de 2026</span>
+  </div>
+
+  <h2>Qué muestra cada captura y qué hay que hacer con ella</h2>
+
+  <p>Las cinco se leyeron completas. Van en el orden en que conviene discutirlas, que no es el orden
+  en que fueron tomadas.</p>
+
+  <div class="captura">
+    <div class="id">Captura 4 — Árbol de problemas y cinco porqués</div>
+    <div class="arch">Screenshot 2026-09-22 152451.png</div>
+    <h3>La decisión está tomada y escrita. Es la pieza más importante de las cinco.</h3>
+    <p>Trae el problema actual, cuatro causas, dos ramas de cinco porqués, la tabla de dos puntos de
+    intervención comparados y, al pie, el problema redactado con la estructura que pide la consigna,
+    con el recuadro <em>sí</em> marcado en verde sobre la pregunta de si es realmente el problema que
+    quieren investigar y sobre el que tienen capacidad de actuar. Eso zanja la discusión del eje, que
+    era el primer obstáculo de todos.</p>
+    <p><b>Lo que hay que corregirle.</b> La causa dominante está mal atribuida, por lo desarrollado en
+    la página anterior. Y hay un detalle de método que vale la pena aprovechar: las cuatro causas
+    están marcadas en verde, o sea <em>hipótesis que debemos investigar</em>, y ninguna en blanco
+    como <em>tenemos evidencia</em>. Es honesto y es correcto, pero ahora hay evidencia para una de
+    ellas —la del tipo de cambio— y conviene moverla de color, porque una causa medida vale distinto
+    que una supuesta en la defensa.</p>
+    <p><b>Lo que ya está bien y conviene no tocar.</b> La segunda rama de porqués llega a <em>carecen
+    de un algoritmo o simulador que evalúe y compare escenarios de compra al instante</em>. Ese es el
+    enunciado de la solución que el proyecto puede construir, y es defendible en una carrera de
+    ciencia de datos. La primera rama, en cambio, termina en una herramienta de ingreso de datos, que
+    es un problema de sistemas y no de análisis.</p>
+  </div>
+
+
+  <div class="pie"><span>Veredicto sobre el rumbo · Universo Monetario</span><span>5 / 10</span></div>
+</div>
+
+<div class="page">
+  <div class="cintillo">
+    <span>Las cinco capturas, anotadas</span>
+    <span>22 de septiembre de 2026</span>
+  </div>
+
+  <div class="captura">
+    <div class="id">Captura 2 — Mapa de empatía del importador</div>
+    <div class="arch">Screenshot 2026-09-22 152406.png</div>
+    <h3>La primera evidencia primaria del proyecto, y el reparo que hay que declarar.</h3>
+    <p>Hasta hoy el proyecto no tenía ni una entrevista, ni una transacción observada, ni un registro
+    de comportamiento de un usuario real. Este mapa rompe eso y lo hace con material utilizable:
+    entre seis y diez horas por pedido para reunir y comparar información, Bs 55.000 inmovilizados en
+    repuestos de baja rotación, Bs 12.040 de sobrecosto cambiario en una compra, la información
+    repartida entre Excel, WhatsApp, correo y el sistema contable, y cinco frases textuales bien
+    tomadas.</p>
+    <p><b>El reparo, que conviene decir antes que lo diga el tribunal.</b> El entrevistado que figura
+    en la ficha comparte nombre con un integrante del equipo. Si es la misma persona, la entrevista
+    no cuenta como descubrimiento de cliente: es conocimiento interno, sigue siendo valioso para
+    formular hipótesis, y no puede usarse como validación de que el problema existe fuera del equipo.
+    Bajo el criterio de <em>The Mom Test</em> es la fuente con mayor riesgo de confirmar lo que ya se
+    quería escuchar. <b>Hay que aclararlo en el documento y conseguir cuatro entrevistas más en
+    empresas ajenas</b>, que es además lo más fácil de conseguir de las tres ideas evaluadas.</p>
+    <p><b>Y una ventaja real que trae, si se declara bien.</b> Si el equipo tiene acceso a los datos
+    de compras de esa importadora, el proyecto deja de depender de que un tercero ceda información,
+    que era la desventaja principal de este eje frente al del ahorrista. Eso vale más que la
+    entrevista, y hay que confirmarlo cuanto antes.</p>
+  </div>
+
+  <div class="pie"><span>Veredicto sobre el rumbo · Universo Monetario</span><span>6 / 10</span></div>
+</div>
+
+<!-- ============ PÁGINA 4 ============ -->
+<div class="page">
+  <div class="cintillo">
+    <span>Las cinco capturas, anotadas</span>
+    <span>22 de septiembre de 2026</span>
+  </div>
+
+  <div class="captura">
+    <div class="id">Captura 3 — Lienzo de propuesta de valor</div>
+    <div class="arch">Screenshot 2026-09-22 152439.png</div>
+    <h3>El encaje está bien planteado y el producto está descrito con precisión.</h3>
+    <p>El perfil del usuario lista cuatro trabajos, cuatro frustraciones y cuatro alegrías coherentes
+    con la entrevista, y del lado del producto hay un panel de evolución histórica del precio por
+    pieza y por categoría, alertas de variación con umbral configurable y un comparador de costo
+    puesto en Santa Cruz con todos los componentes sumados. La frase del creador de alegría —<em>ver
+    la tendencia convierte la corazonada en dato</em>— es la mejor síntesis de valor que produjo el
+    equipo hasta ahora.</p>
+    <p><b>Lo que le falta para ser consistente con la evidencia.</b> Los tres elementos del producto
+    giran alrededor del precio de la pieza. Si la variable dominante del costo es el tipo de cambio,
+    al panel le falta la pieza central: el costo en bolivianos proyectado al día probable de pago,
+    con su rango. El comparador de costo puesto ya va en esa dirección, porque sumar todos los
+    componentes obliga a incluir la conversión; conviene hacerlo explícito.</p>
+    <p><b>Un hueco de formulario, menor pero visible en la defensa.</b> La fecha dice
+    <code>xx / yy / zzz</code> y la etapa <code>nn</code>. Son los campos del machote sin llenar.</p>
+  </div>
+
+  <div class="captura">
+    <div class="id">Captura 5 — Enunciado anterior, marco y evidencias de prensa</div>
+    <div class="arch">Screenshot 2026-09-22 152506.png</div>
+    <h3>Dos ejes conviviendo en el mismo lienzo, y un recorte de prensa que ya no describe el presente.</h3>
+    <p>Arriba está el enunciado del crédito fiscal, atribuido a una autora que no figura entre los
+    cuatro integrantes listados al lado. Conviene resolver esa ambigüedad —si es la consigna de
+    cátedra, el material vale como marco y no como decisión del equipo— y mover la ficha a un área
+    de archivo con la fecha y el motivo. Debajo, la tabla de cinco preguntas de encuadre del problema
+    está contestada para el eje del ahorrista, no para el de repuestos: es material del eje anterior
+    y hoy es la fuente de confusión más probable para quien mire el tablero de afuera.</p>
+    <p><b>Sobre los recortes de prensa.</b> Los tres titulares describen la devaluación y la pérdida
+    de poder adquisitivo, y sirven para el contexto. Dos advertencias medidas: el tipo de cambio
+    boliviano flota desde el 29 de junio de 2026 y en ocho días hábiles de este mes el dólar oficial
+    <b>bajó</b> de Bs 12,64 a Bs 9,83, un 22,2 % <span class="etq e-ev">Evidencia</span>. Un recorte
+    que afirme escasez o alza sostenida del dólar no describe las semanas en curso. Y la nota sobre
+    lo que ya no compran Bs 1.000 habla de inflación acumulada de cinco años, no de la inflación
+    presente, que a doce meses es de 5,02 %. Las dos cosas son ciertas y se contradicen si se citan
+    sin su período.</p>
+  </div>
+
+
+  <div class="pie"><span>Veredicto sobre el rumbo · Universo Monetario</span><span>7 / 10</span></div>
+</div>
+
+<div class="page">
+  <div class="cintillo">
+    <span>Las cinco capturas, anotadas</span>
+    <span>22 de septiembre de 2026</span>
+  </div>
+
+  <div class="captura">
+    <div class="id">Captura 1 — Mapa de empatía de otro grupo</div>
+    <div class="arch">Screenshot 2026-09-22 150848.png</div>
+    <h3>Sirve como vara de comparación, y la diferencia está en un solo casillero.</h3>
+    <p>Es el trabajo de otro equipo, sobre un jubilado insulinodependiente. Vale mirarlo porque
+    muestra el nivel que el mismo formato admite. Tiene diez dimensiones de costo llenas en lugar de
+    la enumeración en prosa, y sobre todo tiene una gema que revela algo que nadie sabía antes de la
+    entrevista: el paciente reduce su dosis a la mitad y recurre a una red informal de préstamo de
+    insulina entre vecinos diabéticos.</p>
+    <p><b>La comparación honesta.</b> La gema del equipo dice que el importador necesita relacionar
+    el precio con la demanda, la rotación, los costos logísticos, el capital y el tiempo de
+    reposición. Eso es una lista de variables correcta, y es lo que cualquiera habría supuesto antes
+    de entrevistar. Una gema tiene que poder sorprender a quien no estuvo. <b>Los Bs 12.040 de
+    sobrecosto cambiario en una sola compra, que hoy están enterrados en el casillero de costos,
+    sirven mejor</b>: son concretos, verificables y contradicen el enunciado del propio árbol. Es un
+    cambio de dos minutos que mejora la pieza más leída del entregable.</p>
+  </div>
+
+  <h2>Lo que el cambio de eje arrastra: el mapa de impacto</h2>
+
+  <p>Esto es lo que hace urgente la corrección y no se ve desde el tablero colaborativo. El mapa de
+  impacto del proyecto reparte <b>209 puntos de historia entre cinco materias</b> y cuelga entero de
+  un objetivo que hoy dice otra cosa que el árbol de problemas aprobado.</p>
+
+  <table>
+    <thead><tr><th style="width:34%">Pieza</th><th style="width:33%">De qué eje habla hoy</th><th>Qué hay que hacer</th></tr></thead>
+    <tbody>
+      <tr><td>Objetivo del mapa de impacto</td><td>Ahorrista, seis opciones y cuatro dimensiones</td><td>Reescribir sobre el importador de repuestos, o justificar el puente por escrito</td></tr>
+      <tr><td>Actor «ahorrista sin formación financiera» (55 puntos)</td><td>Ahorrista</td><td>Reemplazar por el encargado de compras, o degradar a actor secundario</td></tr>
+      <tr><td>Actor «importador que paga al exterior» (44 puntos)</td><td>Crédito fiscal</td><td>Reencuadrar hacia el momento de compra; la mitad de sus entregables sobrevive</td></tr>
+      <tr><td>Actor «contador de la empresa» (70 puntos)</td><td>Crédito fiscal</td><td>Es el que más trabajo arrastra y el que más depende del eje archivado</td></tr>
+      <tr><td>Actor «proveedores de datos» (40 puntos)</td><td>Transversal</td><td>Sobrevive casi entero; sumar la base de importaciones del INE</td></tr>
+      <tr><td><code>PROYECTO.md</code> y <code>PLANTEAMIENTO.md</code></td><td>Crédito fiscal</td><td>Reescribir el planteamiento; hoy contradicen al árbol aprobado</td></tr>
+    </tbody>
+  </table>
+
+  <div class="pie"><span>Veredicto sobre el rumbo · Universo Monetario</span><span>8 / 10</span></div>
+</div>
+
+<div class="page">
+  <div class="cintillo">
+    <span>Consecuencias del cambio de eje</span>
+    <span>22 de septiembre de 2026</span>
+  </div>
+
+  <p class="nota">No es una discusión de redacción. Es la asignación del trabajo del semestre de cinco
+  materias, y cada día que pasa se produce trabajo contra el enunciado viejo.</p>
+
+  <div class="caja acento">
+    <h4>El puente, que es una propuesta y no evidencia <span class="etq e-hi">Hipótesis</span></h4>
+    <p style="margin-bottom:0">Hay una forma de que el trabajo del eje del ahorrista no se pierda.
+    La variable que el importador necesita anticipar para decidir cuándo comprar —cuánto va a costar
+    el dólar el día del pago— es la misma que el ahorrista necesita para decidir dónde poner su
+    dinero. El cuadro comparativo de seis columnas puede sobrevivir como entregable de Business
+    Intelligence II dentro del eje del importador, contestando una pregunta distinta: <em>dónde
+    conviene tener el dinero que está esperando para pagar un pedido</em>. Es una salida limpia y hay
+    que presentarla como decisión de diseño, no como si siempre hubiera sido el plan.</p>
+  </div>
+
+
+  <h2>Lo que este documento no decide</h2>
+
+  <p>Tres cosas quedan explícitamente fuera, porque afirmarlas sería inventar.</p>
+
+  <ul>
+    <li><b>Si el problema existe fuera de la empresa del integrante.</b> Con una entrevista, y
+    posiblemente interna, no se puede saber. Es la pregunta que decide si la idea es real.</li>
+    <li><b>Si Business Intelligence II y el Proyecto Integrador son la misma entrega.</b> Sigue sin
+    resolverse desde hace dos semanas y cambia cuántos entregables hacen falta.</li>
+    <li><b>Si el conjunto de datos de compras de esa importadora existe y es accesible.</b> De eso
+    depende que el proyecto tenga datos propios o dependa de terceros.</li>
+  </ul>
+
+  <h2>Los cinco pasos, en el orden en que conviene darlos</h2>
+
+  <p>El criterio del orden es cuánta incertidumbre elimina cada paso por unidad de esfuerzo, no la
+  comodidad de empezar por lo fácil.</p>
+
+  <div class="paso">
+    <div class="n">01</div>
+    <div class="t"><b>Ratificar el enunciado corregido, por escrito y con fecha</b>
+    <p>Cuesta una reunión. Es el único paso que desbloquea a todos los demás, porque de él cuelgan
+    los 209 puntos de historia. Sale de la reunión con el enunciado en el árbol, la ficha del crédito
+    fiscal archivada con su motivo, y el objetivo del mapa de impacto reescrito.</p></div>
+  </div>
+
+  <div class="paso">
+    <div class="n">02</div>
+    <div class="t"><b>Declarar la relación del entrevistado con el equipo</b>
+    <p>Una línea en el documento. Si es integrante, se dice, y la entrevista pasa a contar como
+    formulación de hipótesis. Ocultarlo es el riesgo más barato de eliminar y el más caro si lo
+    descubre el tribunal.</p></div>
+  </div>
+
+  <div class="paso">
+    <div class="n">03</div>
+    <div class="t"><b>Cuatro entrevistas en importadoras ajenas al equipo</b>
+    <p>El circuito de repuestos de Santa Cruz es visitable y es el acceso más directo de las tres
+    ideas evaluadas. La pregunta que decide todo: si la decisión de compra se toma mirando precios o
+    mirando inventario y capital de trabajo. Los guiones ya están escritos, pregunta por pregunta, en
+    la sección 9 del informe de validación.</p></div>
+  </div>
+
+  <div class="paso">
+    <div class="n">04</div>
+    <div class="t"><b>Confirmar el acceso a los datos de compras</b>
+    <p>Una conversación. Define si el proyecto tiene datos propios o depende de que un tercero ceda
+    información, que es la diferencia entre un trabajo de análisis y un trabajo de descripción.</p></div>
+  </div>
+
+  <div class="paso">
+    <div class="n">05</div>
+    <div class="t"><b>Recién entonces, construir</b>
+    <p>Con el problema validado y el eje ratificado, el panel y el simulador de escenarios de compra
+    son un entregable excelente. Sin eso, son un entregable impecable sobre una pregunta que nadie
+    hizo.</p></div>
+  </div>
+
+  <div class="pie"><span>Veredicto sobre el rumbo · Universo Monetario</span><span>9 / 10</span></div>
+</div>
+
+<div class="page">
+  <div class="cintillo">
+    <span>Procedencia de la evidencia</span>
+    <span>22 de septiembre de 2026</span>
+  </div>
+
+  <h2>De dónde sale cada afirmación</h2>
+
+  <dl class="dl">
+    <dt>Investigación de validación de tres ideas de negocio</dt>
+    <dd>2.621 líneas, dieciocho secciones, del 16 y 17 de septiembre de 2026. Etiqueta cada
+    afirmación como evidencia, indicio, hipótesis o por validar, e incluye una segunda revisión
+    crítica de su propio análisis que corrigió cuatro errores. Copia local en
+    <code>~/informes/um-validacion/</code>.</dd>
+
+    <dt>Base de importaciones del Instituto Nacional de Estadística</dt>
+    <dd>1.433.610 registros de enero de 2023 a julio de 2026, descargados el 16 de septiembre de
+    2026, filtrados por las partidas arancelarias de la canasta de repuestos. Sostiene el tipo de
+    cambio implícito, el salto de julio y los desvíos comparados.</dd>
+
+    <dt>Boletín Estadístico del Mercado de Valores y registros de la ASFI</dt>
+    <dd>Abril y agosto de 2026. Sostienen el contraste entre canales de inversión y el hecho de que
+    no existe ningún proveedor de activos virtuales autorizado.</dd>
+
+    <dt>Serie propia del tipo de cambio y libro de operaciones entre personas</dt>
+    <dd>77.316 observaciones desde julio de 2024, con captura horaria propia desde el 9 de septiembre
+    de 2026. Es el único dato del proyecto que no se puede reconseguir si se apaga.</dd>
+
+    <dt>Capturas del tablero colaborativo del equipo</dt>
+    <dd>Cinco imágenes tomadas el 22 de septiembre de 2026 entre las 15:08 y las 15:25, leídas
+    completas. Son la única fuente de lo que el equipo decidió hoy.</dd>
+  </dl>
+
+  <div class="pie"><span>Veredicto sobre el rumbo · Universo Monetario</span><span>10 / 10</span></div>
+</div>
+
+</body>
+</html>
